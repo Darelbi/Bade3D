@@ -1,0 +1,7 @@
+build
+doc
+/Errors_CMake.txt
+/Errors_MakeAll.txt
+/Log_Profiling.txt
+/Log_TestsResult.txt
+/*.bat
