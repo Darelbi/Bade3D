@@ -13,7 +13,6 @@ namespace GL3 {
 	struct BADE_API GL3TextureUnit{
 		NativeHandle 		texture = 0;
 		NativeHandle		sampler = 0;
-		bool				enabled = false;
 	};
 	
 	struct BADE_API GL3State{
@@ -43,6 +42,7 @@ namespace GL3 {
 		
 		
 		//---
+		NativeEnum			activeTextureUnit = Graphics::texture0;
 			
 		NativeHandle		framebuffer = 0;			// TODO LATER
 		NativeHandle		program = 0;

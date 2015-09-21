@@ -25,7 +25,7 @@ namespace Bade{
 	// This class represent a standard image where each color channel
 	// is 1 byte and we have 3 (Red, Green, Blue) or 4 (RGB + Alpha)
 	// color channels where each channel value is a unsinged integer 
-	// number going from 0 to 255.
+	// number going from 0 to 255. 
 	
 	// Alpha 0 => transparent .. Alpha 255 => full opaque
 	class BADE_API BitmapImage{
@@ -64,7 +64,7 @@ namespace Bade{
 		inline void foreachPixelRGB( Functor func){
 			u8* data = pixels;
 			for(u16 j=0; j<height; j++, data+= lineSize)
-				for( u16 i=0; i<width; i+=channels)
+				for( u16 i=0; i<lineSize; i+=channels)
 					func( data[i], data[i+1], data[i+2]);
 		}
 		
@@ -78,7 +78,7 @@ namespace Bade{
 			
 			u8* data = pixels;
 			const u32 size = width*height;
-			for( u32 i=0; i<size; data += 4)
+			for( u32 i=0; i<size; data += 4, i++)
 				func( data[0], data[1], data[2], data[3]);
 		}
 		

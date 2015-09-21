@@ -8,5 +8,4 @@
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/gl3/GL3RenderQueue.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/gl3/GL3State.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/gl3/GL3Texture.cpp"
-#include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/gl3/GL3Visitors.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/gl3/gl_core_3_3.cpp"

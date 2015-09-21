@@ -1,5 +1,5 @@
 /*******************************************************************************
-   Copyright (C) 2014-2015 Dario Oliveri
+   Copyright (C) 2015 Dario Oliveri
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #pragma once
@@ -25,7 +25,7 @@ namespace Bade{
 	// This class represent a standard image where each color channel
 	// is 1 byte and we have 3 (Red, Green, Blue) or 4 (RGB + Alpha)
 	// color channels where each channel value is a unsinged integer 
-	// number going from 0 to 255.
+	// number going from 0 to 255. 
 	
 	// Alpha 0 => transparent .. Alpha 255 => full opaque
 	class BADE_API BitmapImage{

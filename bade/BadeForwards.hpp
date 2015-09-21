@@ -1,5 +1,5 @@
 /*******************************************************************************
-   Copyright (C) 2014-2015 Dario Oliveri
+   Copyright (C) 2015 Dario Oliveri
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #pragma once
@@ -80,10 +80,11 @@ namespace Bade{
 	
 	// Compile time configuration of the engine. 
 	// If you change ANY of the values you have to RECOMPILE the engine and
-	// any application using it.
+	// any application using it. 
 	struct BADE_API Configuration
 	{
 		static const u32	textureUnits = 32;
+		static const u32	uniformUnits = 32;
 	};
 	
 	// Forward declarations
@@ -99,6 +100,7 @@ namespace Bade{
 	class BitmapImage;
 
 	class Texture;
+	class Uniform;
 	class Sampler;
 	class RenderTexture;
 
@@ -113,6 +115,17 @@ namespace Bade{
 	
 	//Forward declarations of smart pointer types
 	using RenderQueuePtr	= std::shared_ptr< RenderQueue>;
+	using ImageManagerPtr	= std::shared_ptr< ImageManager>;
+	using TextureManagerPtr = std::shared_ptr< TextureManager>;
+	
+	//
+	//  RESOURCES: whethever you have any of the following pointers
+	//	that's mean you have actually allocated somewhere a resource
+	//	on GPU or on SYSTEM. Each "managed unique_ptr" can be copied
+	// 	using only the corresponding manager (You cannot accidentally
+	//	create a resource leak because you need a explicit dependency
+	//	when you want to reuse resources)
+	//
 	
 	/** ForeignBuffer allows accessing data in pointer arrays but prevent
 		accidental deletion. Makes clear you do not own the pointer.*/
@@ -122,10 +135,8 @@ namespace Bade{
 	using BitmapImagePtr    = std::unique_ptr< BitmapImage,		ManagedDeleter>;
 
 	using TexturePtr 		= std::unique_ptr< Texture,       	ManagedDeleter>;
+	using UniformPtr 		= std::unique_ptr< Uniform,       	ManagedDeleter>;
 	using RenderTexturePtr	= std::unique_ptr< RenderTexture, 	ManagedDeleter>;
 	using SamplerPtr 		= std::unique_ptr< Sampler, 		ManagedDeleter>;
 	
-	using ImageManagerPtr	= std::shared_ptr< ImageManager>;
-	using TextureManagerPtr = std::shared_ptr< TextureManager>;
-
 } // namespace Bade

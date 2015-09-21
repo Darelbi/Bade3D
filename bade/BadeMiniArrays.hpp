@@ -1,5 +1,5 @@
 /*******************************************************************************
-   Copyright (C) 2014-2015 Dario Oliveri
+   Copyright (C) 2015 Dario Oliveri
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #pragma once
@@ -28,8 +28,7 @@ namespace Bade {
 			T data[1];
 		};
 		
-		template< typename K>
-		MiniArray( K xx) : data{ xx} {
+		MiniArray( T xx) : data{ xx} {
 		}       
 		
 		MiniArray< T, 1> &operator=(const MiniArray< T, 1> & other) {
@@ -46,8 +45,7 @@ namespace Bade {
 			T data[2];
 		};
 
-		template< typename K>
-		MiniArray( K xx, K yy) : data{ xx, yy} {
+		MiniArray( T xx, T yy) : data{ xx, yy} {
 		}         
 		
 		MiniArray< T, 2> &operator=(const MiniArray< T, 2> & other) {
@@ -64,9 +62,8 @@ namespace Bade {
 			union { T Z; T z; T B; T b; T S; T s;};
 			T data[3];
 		};
-
-		template< typename K>
-		MiniArray( K xx, K yy, K zz) : data{ xx, yy, zz} {
+		
+		MiniArray( T xx, T yy, T zz) : data{ xx, yy, zz} {
 		}     
 		
 		MiniArray< T, 3> &operator=(const MiniArray< T, 3> & other) {
@@ -85,8 +82,7 @@ namespace Bade {
 			Tn data[4];
 		};
 
-		template< typename K>
-		MiniArray( K xx, K yy, K zz, K ww) : data{ xx, yy, zz, ww} {
+		MiniArray( Tn xx, Tn yy, Tn zz, Tn ww) : data{ xx, yy, zz, ww} {
 		}   
 		
 		MiniArray< Tn, 4> &operator=(const MiniArray< Tn, 4> & other) {
