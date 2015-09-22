@@ -64,7 +64,7 @@ namespace Bade{
 		inline void foreachPixelRGB( Functor func){
 			u8* data = pixels;
 			for(u16 j=0; j<height; j++, data+= lineSize)
-				for( u16 i=0; i<width; i+=channels)
+				for( u16 i=0; i<lineSize; i+=channels)
 					func( data[i], data[i+1], data[i+2]);
 		}
 		
@@ -78,7 +78,7 @@ namespace Bade{
 			
 			u8* data = pixels;
 			const u32 size = width*height;
-			for( u32 i=0; i<size; data += 4)
+			for( u32 i=0; i<size; data += 4, i++)
 				func( data[0], data[1], data[2], data[3]);
 		}
 		

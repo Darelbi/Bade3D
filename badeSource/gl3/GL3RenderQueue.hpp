@@ -24,20 +24,24 @@ namespace GL3 {
 		RenderPass			*		currentState; //pointer avoid copying
 
 		ProxyPtr					asyncProxy;
-		
+
 		void minimizeClearStates(	GL3State & lastState,
 									const RenderPass & pass);
 
 		void minimizePassStates(	GL3State & lastState,
 									const RenderPass & pass);
-									
+
+		void minimizeSlotStates(	GL3State & lastState,
+									const ShaderPtr & slot);
+
 		void markDirtyBuffers(		GL3State & lastState);
-		
+
 	public:
 
 		GL3RenderQueue( ProxyPtr proxy);
 
 		void compileStates( StdList< RenderPass> & passes) override;
+
 	};
 
 } // namespace GL3

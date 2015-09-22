@@ -4,7 +4,6 @@
 *******************************************************************************/
 #pragma once
 #include "BadeForwards.hpp"
-#include "BadeRenderSlot.hpp"
 #include "BadeStdVector.hpp"
 #include "BadeMiniArrays.hpp"
 
@@ -75,17 +74,6 @@ namespace Bade {
 
 		const char *name		= nullptr; // debugging name
 		
-		StdVector< RenderSlot>	slots;
-	};
-	
-	class BADE_API RenderTargetPass: public RenderPass{
-		
-	};
-	
-	class BADE_API RenderToVertexPass{
-	public:
-	
-	};
-	
-	
+		StdVector< ShaderPtr>	slots;
+	};	
 } // namespace Bade

@@ -48,9 +48,6 @@ namespace Bade {
 		/** Preferred way to reuse a existing texture. SHALLOW COPY */
 		virtual TexturePtr  shallowCopy( TexturePtr & texture) = 0;
 
-		/** Preferred way to reuse a existing texture. SHALLOW COPY */
-		virtual SamplerPtr  shallowCopy( SamplerPtr & sampler) = 0;
-
 		/** Retrieve a texture sampler object. */
 		virtual SamplerPtr 	getSampler( FilteringMode 		filtering,
 										TextureWrap			wrap,
@@ -63,6 +60,5 @@ namespace Bade {
 
 		/** Allow destruct derived classes from this pointer.*/
 		virtual ~TextureManager(){}
-
 	};
 } // namespace Bade

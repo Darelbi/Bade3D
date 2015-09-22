@@ -57,7 +57,7 @@ namespace Bade{
 #endif
 
     /* Char. */
-    typedef char    c8;
+    //typedef char    c8; //just use "const char *" if needed
 	
 	// Managed types: low overhead reference counting.
 	class BADE_API ManagedEntity{
@@ -83,33 +83,39 @@ namespace Bade{
 	// any application using it. 
 	struct BADE_API Configuration
 	{
-		static const u32	textureUnits = 32;
-		static const u32	uniformUnits = 32;
+		static const u32	textureUnits 	 = 32;
+		static const u32	uniformUnits 	 = 32;
+		static const u32	vertexAttributes = 8;
 	};
 	
 	// Forward declarations
 	class RenderQueue;
 	class RenderPass;
-	class RenderSlot;
 	
 	class TextureManager;
 	class ImageManager;
+	class ShaderManager;
 
 	class ColorRGB;
 	class ColorRGBA;
 	class BitmapImage;
 
 	class Texture;
-	class Uniform;
 	class Sampler;
-	class RenderTexture;
+	
+	class VertexMain;
+	class FragmentMain;
+	class Shader;
+	class ShaderOptions;
 
 	class TextureVisitor;
 	class RenderTextureVisitor;
 	
 	//Forwards declaration of enums
-	enum struct InternalFormat: u8;
-	enum struct InternalWriteFormat: u8;
+		
+	enum struct InternalFormat: u8; //BadeTexture.hpp
+		
+	enum struct InternalWriteFormat: u8; //BadeTextureManager.hpp
 	enum struct FilteringMode: u8;
 	enum struct TextureWrap: u8;
 	
@@ -117,6 +123,13 @@ namespace Bade{
 	using RenderQueuePtr	= std::shared_ptr< RenderQueue>;
 	using ImageManagerPtr	= std::shared_ptr< ImageManager>;
 	using TextureManagerPtr = std::shared_ptr< TextureManager>;
+	using ShaderManagerPtr	= std::shared_ptr< ShaderManager>;
+	
+	
+	/** ForeignBuffer allows accessing data in pointer arrays but prevent
+		accidental deletion. Makes clear you do not own the pointer.*/
+	template< typename T>
+	using ForeignBuffer		= std::unique_ptr< T[],				NoDeleter<T>>;
 	
 	//
 	//  RESOURCES: whethever you have any of the following pointers
@@ -124,19 +137,12 @@ namespace Bade{
 	//	on GPU or on SYSTEM. Each "managed unique_ptr" can be copied
 	// 	using only the corresponding manager (You cannot accidentally
 	//	create a resource leak because you need a explicit dependency
-	//	when you want to reuse resources)
+	//	on its manager when you want to reuse same resource)
 	//
-	
-	/** ForeignBuffer allows accessing data in pointer arrays but prevent
-		accidental deletion. Makes clear you do not own the pointer.*/
-	template< typename T>
-	using ForeignBuffer		= std::unique_ptr< T[],				NoDeleter<T>>;
-	
-	using BitmapImagePtr    = std::unique_ptr< BitmapImage,		ManagedDeleter>;
-
-	using TexturePtr 		= std::unique_ptr< Texture,       	ManagedDeleter>;
-	using UniformPtr 		= std::unique_ptr< Uniform,       	ManagedDeleter>;
-	using RenderTexturePtr	= std::unique_ptr< RenderTexture, 	ManagedDeleter>;
-	using SamplerPtr 		= std::unique_ptr< Sampler, 		ManagedDeleter>;
+	using BitmapImagePtr	= std::unique_ptr< BitmapImage,		ManagedDeleter>;
+	using TexturePtr		= std::unique_ptr< Texture,			ManagedDeleter>;
+	using SamplerPtr		= std::unique_ptr< Sampler,			ManagedDeleter>;
+	using ShaderPtr			= std::unique_ptr< Shader,			ManagedDeleter>;
+	using ShaderOptionsPtr	= std::unique_ptr< ShaderOptions,	ManagedDeleter>;	
 	
 } // namespace Bade

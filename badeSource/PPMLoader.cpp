@@ -7,7 +7,7 @@
 namespace Bade{
 namespace Deprecated{ //deprecated because originally created for quick tests
 	
-u8* LoadPPM_P3(const c8 * filename, u32 width, u32 height)
+u8* LoadPPM_P3(const char * filename, u32 width, u32 height)
 {
 	std::ifstream myfile;
 	myfile.open(filename);

@@ -4,6 +4,9 @@
 *******************************************************************************/
 #include "GL3RenderQueue.hpp"
 #include "GL3AsyncProxy.hpp"
+#include "GL3Shader.hpp"
+#include <algorithm>
+#include <iterator>
 
 namespace Bade {
 namespace GL3 {
@@ -11,34 +14,32 @@ namespace GL3 {
 	GL3RenderQueue::GL3RenderQueue(  ProxyPtr proxy){
 		asyncProxy = proxy;
 	}
-	
+
 	void GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
-		
+
 		lastState = baseState;
-		
+
 		for( RenderPass & pass: passes){
 
 			minimizeClearStates( lastState, pass);
-			
+
 			if(pass.slots.size()==0)
 				continue;
-			
+
 			markDirtyBuffers( lastState);
-			
+
 			minimizePassStates( lastState, pass);
-		
-			for( RenderSlot & slot : pass.slots){
-				// RENDER SLOT (TODO:)
-				
-			}
+
+			for( ShaderPtr & slot : pass.slots)
+				minimizeSlotStates( lastState, slot);
 		}
 	}
-	
+
 	// ===========================================================
 	// 	BEWARE, HERE STARTS THE RE-USABLE MESS OF NON-TRIVIAL-CODE
 	// ===========================================================
-	
-	void GL3RenderQueue::minimizeClearStates(	
+
+	void GL3RenderQueue::minimizeClearStates(
 										GL3State & lastState,
 										const RenderPass & pass)
 	{
@@ -47,24 +48,24 @@ namespace GL3 {
 			if(pass.scissorTest)
 			{
 				asyncProxy->enableScissorTest();
-				
+
 				lastState.scissorTest = true;
-				
+
 				for(int i = 0; i<4; i++)
 					if(pass.scissorRectangle.data[i] != lastState.scissorRectangle.data[i]){
 						asyncProxy->setScissorRectangle( pass.scissorRectangle);
 						break;
 					}
-						
+
 			}
 			else
 			{
 				asyncProxy->disableScissorTest();
-				
+
 				lastState.scissorTest = false;
 			}
 		}
-		
+
 		bool clearColorRequested = pass.clearColor;
 		bool clearDepthRequested = pass.clearDepth;
 		bool clearStencilRequested = pass.clearStencil;
@@ -89,7 +90,7 @@ namespace GL3 {
 
 				lastState.colorMask = true;
 			}
-			
+
 			if( lastState.clearColor.r != pass.color.r ||
 				lastState.clearColor.g != pass.color.g ||
 				lastState.clearColor.b != pass.color.b ||
@@ -126,18 +127,18 @@ namespace GL3 {
 			asyncProxy->clearBuffers( 	clearColorRequested,
 										clearDepthRequested,
 										clearStencilRequested);
-										
+
 		if(clearColorRequested)
 			lastState.colorCleared = true;
-		
+
 		if(clearDepthRequested)
 			lastState.depthCleared = true;
-		
+
 		if(clearStencilRequested)
 			lastState.stencilCleared = true;
 	}
 
-	void GL3RenderQueue::minimizePassStates(	
+	void GL3RenderQueue::minimizePassStates(
 										GL3State & lastState,
 										const RenderPass & pass)
 	{
@@ -169,7 +170,7 @@ namespace GL3 {
 				lastState.depthTestEnabled = false;
 			}
 		}else{
-			if( lastState.depthTestEnabled == false) 
+			if( lastState.depthTestEnabled == false)
 			{
 				asyncProxy->enableDepthTest();
 
@@ -183,41 +184,41 @@ namespace GL3 {
 
 				lastState.depthTest = pass.depthTest;
 			}
-			
+
 			// depth write
 			if(lastState.depthMaskEnabled != pass.depthWrite){
 				if(pass.depthWrite)
 				{
 					asyncProxy->enableDepthMask();
-					
+
 					lastState.depthMaskEnabled = true;
 				}
 				else
 				{
 					asyncProxy->disableDepthMask();
-					
+
 					lastState.depthMaskEnabled = false;
 				}
 			}
-		}	
-		
-		
+		}
+
+
 		// POLYGON FILLING MODE (FILL OR LINE)
 		if( pass.wireframe != lastState.wireframe){
 			if( pass.wireframe)
 			{
 				asyncProxy->enableWireframeMode();
-				
+
 				lastState.wireframe = true;
 			}
 			else
 			{
 				asyncProxy->disableWireframeMode();
-				
+
 				lastState.wireframe = false;
 			}
 		}
-		
+
 		// BLEND MODE
 		if(lastState.blendMode != pass.blendMode){
 			if(pass.blendMode == BlendMode::Opaque)
@@ -230,20 +231,20 @@ namespace GL3 {
 				{
 					asyncProxy->enableBlending();
 				}
-				
+
 				if(lastState.lastBlendMode != pass.blendMode)
 				{
 					// NO NEED FOR SEPARATE ALPHA (till now^^)
 					// glBlendEquation( GL_FUNC_ADD ); // DEFAULT : NO NEED TO SET
 					// glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-					asyncProxy->setBlendFunc( pass.blendMode);  
-					lastState.lastBlendMode = pass.blendMode;   
+					asyncProxy->setBlendFunc( pass.blendMode);
+					lastState.lastBlendMode = pass.blendMode;
 				}
 			}
-			
+
 			lastState.blendMode = pass.blendMode;
 		}
-		
+
 		// STENCIL FUNCTION
 		// Stenciling always needed unless is DrawAlways
 		// and operation is Keep
@@ -252,52 +253,146 @@ namespace GL3 {
 			if( lastState.stencilTestEnabled)
 			{
 				asyncProxy->disableStencilTest();
-				
+
 				lastState.stencilTestEnabled = false;
 			}
 		}else{
 			if( lastState.stencilTestEnabled==false)
 			{
 				asyncProxy->enableStencilTest();
-				
+
 				lastState.stencilTestEnabled = true;
 			}
-			
+
 			if( lastState.stencilTest != pass.stencilTest
 				|| lastState.stencilVal != pass.stencilVal)
 			{
 				asyncProxy->setStencilFunc( pass.stencilTest,  pass.stencilVal);
-				
+
 				lastState.stencilTest = pass.stencilTest;
 				lastState.stencilVal = pass.stencilVal;
 			}
-			
+
 			if( lastState.stencilOp != pass.stencilOp)
 			{
 				asyncProxy->setStencilOp( pass.stencilOp);
-				
+
 				lastState.stencilOp = pass.stencilOp;
 			}
 		}
 	}
-	
+
 	void GL3RenderQueue::markDirtyBuffers( GL3State & lastState){
-		
+
 		//dirty only if rendering happens wich is when we have render slots.
 		//if no rendering happens we can just avoid clearing buffers
 		//again (would be a no-op)
-		
+
 		//TODO: check if clear value is changed.
-		
+
 		if(lastState.colorMask)
 			lastState.colorCleared = false;
-		
+
 		if(lastState.depthMaskEnabled)
 			lastState.depthCleared = false;
-		
+
 		if(lastState.stencilMask != 0x00)
 			lastState.stencilCleared = false;
 	}
 
+	// I know it may see "too much" trying to avoid calling glActiveTexture
+	// once for each material, but with 1000 drawcalls it is possible 
+	// we save 1000 driver calls, so I have to save this call ESPECIALLY
+	template<typename FwdIter, typename F>
+	F ForeachStartingAt( FwdIter begin, FwdIter start, FwdIter end, F functor)
+	{
+		return std::for_each( begin, start,
+
+					std::for_each( start, end, functor)
+				);
+	}
+
+	void GL3RenderQueue::minimizeSlotStates(GL3State & lastState,
+											const ShaderPtr & slot)
+	{
+		GL3Shader *  shader = static_cast< GL3Shader *>( slot.get());
+
+		if(shader->program != lastState.program)
+		{
+			asyncProxy->useProgram( shader->program);
+
+			lastState.program  = shader->program;
+			// TODO: if program is the same, we can skip part of Cache fitting.
+			// (same slots will be used, eventually with different textures)
+			// save some CPU cycles when compiling something
+		}
+
+		// cache fitting.
+		for(GL3TextureUnit & unit: lastState.texturesCache)
+			unit.used = false;
+
+		for(GL3TextureUnit & unit: shader->textures)
+		{
+			lastState.texturesCache[ unit.unit].texture = unit.texture;
+			lastState.texturesCache[ unit.unit].sampler = unit.sampler;
+			lastState.texturesCache[ unit.unit].target = unit.target;
+			lastState.texturesCache[ unit.unit].used = true;
+		}
+
+		bool active = shader->isTextureUnitUsed( lastState.activeTextureUnit);
+
+		auto first	= std::begin( lastState.texturesCache);
+		auto last	= std::end( lastState.texturesCache);
+
+		auto start	= first;
+
+		if(active)
+			start += lastState.activeTextureUnit;
+
+		// TODO: NEED HEAVY UNIT TESTING THERE
+		ForeachStartingAt( first, start , last,
+			[&]( const GL3TextureUnit & unit)
+			{
+				if( unit.used)
+				{
+					bool bindTexture = false;
+					if(	unit.target != lastState.textures[unit.unit].target  ||
+						unit.texture != lastState.textures[unit.unit].texture)
+					{
+						bindTexture = true;
+					}
+
+					bool bindSampler = false;
+					if( unit.sampler != lastState.textures[unit.unit].sampler)
+					{
+						bindSampler = true;
+					}
+
+					if( unit.unit != lastState.activeTextureUnit && (bindSampler||bindTexture))
+					{
+						asyncProxy->activeTextureUnit( unit.unit);
+
+						lastState.activeTextureUnit = unit.unit;
+					}
+
+					if( bindSampler)
+					{
+						asyncProxy->bindSampler( unit.unit, unit.sampler);
+
+						lastState.textures[ unit.unit].sampler = unit.sampler;
+					}
+
+					if( bindTexture)
+					{
+						asyncProxy->bindTexture( unit.target, unit.texture);
+
+						lastState.textures[ unit.unit].texture = unit.texture;
+						lastState.textures[ unit.unit].target = unit.target;
+					}
+				}
+			});
+		
+		//TODO: binding uniformbuffers
+	}
 } // namespace GL3
 } // namespace Bade

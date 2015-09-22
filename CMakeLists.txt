@@ -57,6 +57,9 @@ set( BADE_INFECTORPP2_DIR "../Infectorpp" CACHE PATH
 set( BADE_UNITY_BUILD false CACHE BOOL
 	"choose TRUE if you are compiling Bade just once, FALSE otherwise")
 
+	
+set( BADE_ENABLE_PROFILING false CACHE BOOL
+	"choose TRUE if you want to compile using the native profiler")
 
 #==============================================================================
 # Enable C++11 support ( MIT LICENSE: Copyright (c) 2013 Nathan Osman)

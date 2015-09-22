@@ -31,4 +31,4 @@
     
 #endif
 
-//  currently no WindowsPhone. No GL, so "party later maybe"
+//  currently no WindowsPhone. it has no GL :/

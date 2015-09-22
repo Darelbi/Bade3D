@@ -5,6 +5,7 @@
 #pragma once
 #include "../BadeRenderPass.hpp"
 #include "../CommandQueue.hpp"
+#include "../PortableGraphics.hpp"
 
 namespace Bade {
 namespace GL3 {
@@ -56,6 +57,20 @@ namespace GL3 {
 		
 	void _setStencilOp( u8*);
 	
+	void _useProgram( u8*);
+	
+	
+	// TODO: "vectorize": 10 texture units => 10 functions
+	void _activeTextureUnit( u8*);
+	
+	// TODO: "vectorize": 10 texture units => 10 functions
+	struct bindSamplerParm;
+	void _bindSampler( u8*);
+	
+	// TODO: "vectorize": 2 texture types => 2 functions
+	struct bindTextureParm;
+	void _bindTexture( u8*);
+	
 	class GL3AsyncProxy{
 		
 		CommandQueue	queue;
@@ -105,6 +120,14 @@ namespace GL3 {
 		void setStencilFunc( StencilTest, u8);
 		
 		void setStencilOp( StencilOp);
+		
+		void useProgram( NativeHandle program);
+		
+		void activeTextureUnit( u32 unit);
+		
+		void bindSampler( NativeHandle unit, NativeHandle sampler );
+		
+		void bindTexture( NativeEnum target, NativeHandle texture);
 	};
 } // namespace GL3
 } // namespace Bade
