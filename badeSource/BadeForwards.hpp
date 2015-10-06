@@ -91,6 +91,8 @@ namespace Bade{
 	// Forward declarations
 	class RenderQueue;
 	class RenderPass;
+	class RenderSlot;
+	class TextureSlot;
 	
 	class TextureManager;
 	class ImageManager;
@@ -102,6 +104,8 @@ namespace Bade{
 
 	class Texture;
 	class Sampler;
+	class MeshBuffer;
+	class IndexBuffer;
 	
 	class VertexMain;
 	class FragmentMain;
@@ -119,12 +123,14 @@ namespace Bade{
 	enum struct FilteringMode: u8;
 	enum struct TextureWrap: u8;
 	
+	enum struct TextureType: u8;	//BadeShaderOptions.hpp
+	enum struct VertexAttribute: u8; 
+	
 	//Forward declarations of smart pointer types
 	using RenderQueuePtr	= std::shared_ptr< RenderQueue>;
 	using ImageManagerPtr	= std::shared_ptr< ImageManager>;
 	using TextureManagerPtr = std::shared_ptr< TextureManager>;
 	using ShaderManagerPtr	= std::shared_ptr< ShaderManager>;
-	
 	
 	/** ForeignBuffer allows accessing data in pointer arrays but prevent
 		accidental deletion. Makes clear you do not own the pointer.*/
@@ -142,7 +148,10 @@ namespace Bade{
 	using BitmapImagePtr	= std::unique_ptr< BitmapImage,		ManagedDeleter>;
 	using TexturePtr		= std::unique_ptr< Texture,			ManagedDeleter>;
 	using SamplerPtr		= std::unique_ptr< Sampler,			ManagedDeleter>;
+	using MeshBufferPtr		= std::unique_ptr< MeshBuffer,		ManagedDeleter>;
+	using IndexBufferPtr	= std::unique_ptr< IndexBuffer,		ManagedDeleter>;
 	using ShaderPtr			= std::unique_ptr< Shader,			ManagedDeleter>;
-	using ShaderOptionsPtr	= std::unique_ptr< ShaderOptions,	ManagedDeleter>;	
+	using ShaderOptionsPtr	= std::unique_ptr< ShaderOptions,	ManagedDeleter>;
+	using TextureSlotPtr	= std::unique_ptr< TextureSlot,		ManagedDeleter>;
 	
 } // namespace Bade

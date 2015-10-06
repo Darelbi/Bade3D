@@ -37,18 +37,5 @@ namespace Bade {
 		virtual bool hasMipmaps() const = 0;
 		
 		virtual InternalFormat getInternalFormat() const = 0;
-		
-		/** Used internally (hides most stuff).*/
-		virtual void accept( TextureVisitor &) = 0;
-		
-		/** Used internally, do not rely on this method.*/
-		virtual u32 getEngineHandle() = 0;
-	};
-	
-	class BADE_API RenderTexture: public Texture{
-	public:
-	
-		/** Used internally (hides most stuff).*/
-		virtual void accept( RenderTextureVisitor &) = 0;
 	};
 } // namespace Bade

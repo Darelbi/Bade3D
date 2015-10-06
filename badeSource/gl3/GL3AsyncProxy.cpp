@@ -8,6 +8,9 @@
 namespace Bade {
 namespace GL3 {
 	
+	#ifdef GL
+		#error "Check inclusion of GL headers."
+	#endif
 	#define GL gl::_detail
 	
 	template< typename T>
@@ -312,6 +315,15 @@ namespace GL3 {
 		parm.target = target;
 		parm.texture = texture;
 		queue.pushCommand( _bindTexture, parm);
+	}
+	
+	
+	void _setVao( u8* p){
+		parms< NativeHandle> parm{ p};
+		GL::BindVertexArray( *parm);
+	}
+	void GL3AsyncProxy::setVao( NativeHandle vao){
+		queue.pushCommand( _setVao, vao);
 	}
 	#undef GL
 } // namespace GL3

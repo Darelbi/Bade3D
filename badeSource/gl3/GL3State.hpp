@@ -4,13 +4,14 @@
 *******************************************************************************/
 #pragma once
 #include "../BadeRenderPass.hpp"
+#include "../BadeRenderSlot.hpp"
 #include "../PortableGraphics.hpp" // GL header
 
 
 namespace Bade {
 namespace GL3 {
 	
-	struct GL3TextureUnit{
+	struct GL3TextureUnit: public TextureSlot{
 		NativeHandle	texture = 0;
 		NativeHandle	sampler = 0;
 		NativeEnum		target;
@@ -47,7 +48,7 @@ namespace GL3 {
 		//---
 		int					activeTextureUnit = -1;
 			
-		
+		NativeHandle		vao = 0;
 		NativeHandle		program = 0;
 		
 		GL3TextureUnit		textures[ Configuration::textureUnits];

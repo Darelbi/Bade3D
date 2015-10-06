@@ -47,7 +47,7 @@ set( BADE_SDL2_DIRECTORY "../SDLhg" CACHE PATH
 	
 	
 set( BADE_INFECTORPP2_GLUE true CACHE BOOL
-    "Build and use SDL2 (used for some demos and tests). ")
+    "Build and use infectorpp2 (used for some demos and tests). ")
 
 	
 set( BADE_INFECTORPP2_DIR "../Infectorpp" CACHE PATH
@@ -60,6 +60,14 @@ set( BADE_UNITY_BUILD false CACHE BOOL
 	
 set( BADE_ENABLE_PROFILING false CACHE BOOL
 	"choose TRUE if you want to compile using the native profiler")
+	
+	
+set( BADE_ENABLE_EXCEPTIONS false CACHE BOOL
+	"TRUE enable infectorpp2 to throw instead of fail (certain) assertions")
+	
+	
+set( BADE_ENABLE_TESTS true CACHE BOOL
+	"TRUE to enable tests.")
 
 #==============================================================================
 # Enable C++11 support ( MIT LICENSE: Copyright (c) 2013 Nathan Osman)
@@ -81,7 +89,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	
 	#Profile code with GCC (uncomment to enable gprof profiling)
-	if(CMAKE_COMPILER_IS_GNUCXX)
+	if(CMAKE_COMPILER_IS_GNUCXX AND BADE_ENABLE_PROFILING)
 		#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
 		#SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 		#SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
@@ -150,6 +158,11 @@ endif()
 
 # Build SDL2
 if(BADE_SDL2_DEVICE)
+
+	#SDL2 CMake scripts are really bad designed, they expose a 
+	# embarassing amount of cache variables without any prefix.
+	# later I'll add some code to hide them to final users.
+
     add_subdirectory( ${BADE_SDL2_DIRECTORY} ${CMAKE_BINARY_DIR}/SDL2)
 	#target_link_libraries( libBadeEngine3D ${OPENGL_gl_LIBRARY})
 endif()
@@ -157,6 +170,33 @@ endif()
 
 # Build Infectorpp
 if(BADE_INFECTORPP2_GLUE)
+
+	set(	INFECTORPP2_ENABLE_PROFILING 
+			${BADE_ENABLE_PROFILING}
+										CACHE INTERNAL 
+										"forward configuration" FORCE)
+										
+	set(	INFECTORPP2_UNITY_BUILD 
+			${BADE_UNITY_BUILD} 
+										CACHE INTERNAL 
+										"forward configuration" FORCE)
+										
+	set(	INFECTORPP2_TARGET_NAME 
+			"GlueLibrary" 
+										CACHE INTERNAL 
+										"forward configuration" FORCE)
+										
+	set( 	INFECTORPP2_ENABLE_EXCEPTIONS 
+			${BADE_ENABLE_EXCEPTIONS}
+										CACHE INTERNAL 
+										"forward configuration" FORCE)
+	
+	#enable tests only if user has exceptions
+	set( 	INFECTORPP2_ENABLE_TESTS 
+			${BADE_ENABLE_EXCEPTIONS} AND ${BADE_ENABLE_TESTS}
+										CACHE INTERNAL 
+										"forward configuration" FORCE)
+										
 	add_subdirectory( ${BADE_INFECTORPP2_DIR} ${CMAKE_BINARY_DIR}/Infectorpp2)
 endif()
 
@@ -187,6 +227,10 @@ add_custom_command(TARGET libBadeEngine3D POST_BUILD
 #==============================================================================
 # Preparation for Unit testing.
 #==============================================================================
+
+if( NOT ${BADE_ENABLE_TESTS})
+	return()
+endif()
 
 enable_testing()
 add_library( libCatch SHARED tests/catch.cxx)

@@ -5,8 +5,6 @@
 #pragma once
 #include "../BadeTextureManager.hpp"
 #include "../BadeStdVector.hpp"
-#include "../BadeStdQueue.hpp"
-#include "../InternalForwards.hpp"
 #include "GL3Texture.hpp"
 
 namespace Bade {

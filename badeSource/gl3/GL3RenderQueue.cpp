@@ -5,17 +5,20 @@
 #include "GL3RenderQueue.hpp"
 #include "GL3AsyncProxy.hpp"
 #include "GL3Shader.hpp"
+#include "GL3MeshBuffer.hpp"
 #include <algorithm>
 #include <iterator>
 
 namespace Bade {
 namespace GL3 {
+	
+	// TODO: refactoring: move part of code into separate functions
 
 	GL3RenderQueue::GL3RenderQueue(  ProxyPtr proxy){
 		asyncProxy = proxy;
 	}
 
-	void GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
+	bool GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
 
 		lastState = baseState;
 
@@ -30,7 +33,7 @@ namespace GL3 {
 
 			minimizePassStates( lastState, pass);
 
-			for( ShaderPtr & slot : pass.slots)
+			for( RenderSlot & slot : pass.slots)
 				minimizeSlotStates( lastState, slot);
 		}
 	}
@@ -300,7 +303,7 @@ namespace GL3 {
 			lastState.stencilCleared = false;
 	}
 
-	// I know it may see "too much" trying to avoid calling glActiveTexture
+	// I know it may seem "too much" trying to avoid calling glActiveTexture
 	// once for each material, but with 1000 drawcalls it is possible 
 	// we save 1000 driver calls, so I have to save this call ESPECIALLY
 	template<typename FwdIter, typename F>
@@ -313,31 +316,39 @@ namespace GL3 {
 	}
 
 	void GL3RenderQueue::minimizeSlotStates(GL3State & lastState,
-											const ShaderPtr & slot)
+											const RenderSlot & slot)
 	{
-		GL3Shader *  shader = static_cast< GL3Shader *>( slot.get());
+		GL3Shader *  shader = static_cast< GL3Shader *>( slot.shader.get());
 
 		if(shader->program != lastState.program)
 		{
 			asyncProxy->useProgram( shader->program);
 
 			lastState.program  = shader->program;
-			// TODO: if program is the same, we can skip part of Cache fitting.
-			// (same slots will be used, eventually with different textures)
-			// save some CPU cycles when compiling something
+		}
+		
+		if(shader->vao!= lastState.vao)
+		{
+			asyncProxy->setVao( shader->vao);
+			
+			lastState.vao = shader->vao;
 		}
 
-		// cache fitting.
-		for(GL3TextureUnit & unit: lastState.texturesCache)
+		// cache fitting. BEGIN
+		for( GL3TextureUnit & unit: lastState.texturesCache)
 			unit.used = false;
 
-		for(GL3TextureUnit & unit: shader->textures)
+		for( const TextureSlotPtr & unit: slot.textures)
 		{
-			lastState.texturesCache[ unit.unit].texture = unit.texture;
-			lastState.texturesCache[ unit.unit].sampler = unit.sampler;
-			lastState.texturesCache[ unit.unit].target = unit.target;
-			lastState.texturesCache[ unit.unit].used = true;
+			GL3TextureUnit * tex = static_cast< GL3TextureUnit*> ( unit.get());
+			
+			lastState.texturesCache[ tex->unit ].texture = tex->texture;
+			lastState.texturesCache[ tex->unit ].sampler = tex->sampler;
+			lastState.texturesCache[ tex->unit ].target = tex->target;
+			lastState.texturesCache[ tex->unit ].used = true;
 		}
+		
+		// cache fitting. END
 
 		bool active = shader->isTextureUnitUsed( lastState.activeTextureUnit);
 

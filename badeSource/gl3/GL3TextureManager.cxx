@@ -68,7 +68,7 @@ TexturePtr GL3TextureManager::getTexture( 	const BitmapImage & image,
 	GL3Texture * texture = &referencedTextures[textureIndex];
 	
 	texture->mipmaps 		= mipmaps;
-	texture->engineHandel 	= textureIndex;
+	texture->engineHandle 	= textureIndex;
 	texture->nativeHandle	= 0;
 	texture->format			= image.hasAlphaChannel() ? 
 								InternalFormat. RGBA : InternalFormat. RGB;
