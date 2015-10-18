@@ -13,11 +13,6 @@ class GL3Texture: public Texture{
 	
 public:
 	
-	inline void grab(){ referenceIncrement(); }
-
-	GL3Texture( const GL3Texture & other) = default;
-	GL3Texture& operator =( const GL3Texture & other) = default;
-	
 	virtual bool isARenderTarget() const override;
 		
 	virtual bool hasMipmaps() const override;

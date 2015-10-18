@@ -5,9 +5,11 @@
 #include "GL3RenderQueue.hpp"
 #include "GL3AsyncProxy.hpp"
 #include "GL3Shader.hpp"
-#include "GL3MeshBuffer.hpp"
+
+// IMMEDIATE TODO: GL3MeshBuffer (serve VAO, l'index fa parte del VAO)
 #include <algorithm>
-#include <iterator>
+//#include "GL3MeshBuffer.hpp"
+
 
 namespace Bade {
 namespace GL3 {
@@ -315,9 +317,11 @@ namespace GL3 {
 				);
 	}
 
+
 	void GL3RenderQueue::minimizeSlotStates(GL3State & lastState,
 											const RenderSlot & slot)
 	{
+#if 0 // WAIT OTHER CODE
 		GL3Shader *  shader = static_cast< GL3Shader *>( slot.shader.get());
 
 		if(shader->program != lastState.program)
@@ -404,6 +408,7 @@ namespace GL3 {
 			});
 		
 		//TODO: binding uniformbuffers
+#endif
 	}
 } // namespace GL3
 } // namespace Bade

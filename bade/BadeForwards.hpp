@@ -137,6 +137,9 @@ namespace Bade{
 	template< typename T>
 	using ForeignBuffer		= std::unique_ptr< T[],				NoDeleter<T>>;
 	
+	template< typename T>
+	using ManagedResource 	= std::unique_ptr< T, 				ManagedDeleter>;
+	
 	//
 	//  RESOURCES: whethever you have any of the following pointers
 	//	that's mean you have actually allocated somewhere a resource
@@ -145,13 +148,13 @@ namespace Bade{
 	//	create a resource leak because you need a explicit dependency
 	//	on its manager when you want to reuse same resource)
 	//
-	using BitmapImagePtr	= std::unique_ptr< BitmapImage,		ManagedDeleter>;
-	using TexturePtr		= std::unique_ptr< Texture,			ManagedDeleter>;
-	using SamplerPtr		= std::unique_ptr< Sampler,			ManagedDeleter>;
-	using MeshBufferPtr		= std::unique_ptr< MeshBuffer,		ManagedDeleter>;
-	using IndexBufferPtr	= std::unique_ptr< IndexBuffer,		ManagedDeleter>;
-	using ShaderPtr			= std::unique_ptr< Shader,			ManagedDeleter>;
-	using ShaderOptionsPtr	= std::unique_ptr< ShaderOptions,	ManagedDeleter>;
-	using TextureSlotPtr	= std::unique_ptr< TextureSlot,		ManagedDeleter>;
+	using BitmapImagePtr	= ManagedResource< BitmapImage >;
+	using TexturePtr		= ManagedResource< Texture >;
+	using SamplerPtr		= ManagedResource< Sampler >;
+	using MeshBufferPtr		= ManagedResource< MeshBuffer >;
+	using IndexBufferPtr	= ManagedResource< IndexBuffer >;
+	using ShaderPtr			= ManagedResource< Shader >;
+	using ShaderOptionsPtr	= ManagedResource< ShaderOptions >;
+	using TextureSlotPtr	= ManagedResource< TextureSlot >;
 	
 } // namespace Bade

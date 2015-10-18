@@ -5,51 +5,48 @@
 #pragma once
 #include "../BadeTextureManager.hpp"
 #include "../BadeStdVector.hpp"
-#include "GL3Texture.hpp"
+#include "../ManageEngine.hpp"
 
-namespace Bade {
-	
-	class InterleavedRenderer;
-	
+
+namespace Bade {	
 namespace GL3 {
 	
+	class GL3Texture;
 	using namespace std;
 	
 	/** The texture loading interface is highly incomplete, it just serves
 		as proof of concept for now.*/
-	class GL3TextureManager: public TextureManager{ //TODO: REFACTORING: TextureManager<GL3Texture>
+	class GL3TextureManager: public TextureManager{
 		
-		StdVector< GL3Texture>	referencedTextures;
-		StdQueue< GL3Texture*>	streamRequests;
-		
-		ResourceQueuePtr 		resourceLoader;
-		ImageManagerPtr			imageManager;
+		ManageEngine< GL3Texture>	textures;
 		
 	public:
 	
-		GL3TextureManager(	ResourceQueuePtr	loader,
-							ImageManagerPtr		imageManager);
+		GL3TextureManager();
 	
-		virtual TexturePtr getTexture( 	BitmapImagePtr & image,
-										bool mipmaps = true) = 0;
+		TexturePtr getTexture( 	BitmapImagePtr & image,
+								bool mipmaps) override;
+										
+		void reloadTexture( BitmapImagePtr image,
+							TexturePtr & texture) override;
 
-		virtual void reloadTexture( BitmapImagePtr & image,
-									TexturePtr & texture) = 0;
-	
-		virtual TexturePtr  clone( TexturePtr & texture) override;
+		TexturePtr  shallowCopy( TexturePtr & texture) override;
 
-		virtual SamplerPtr  clone( SamplerPtr & sampler) override;
-
-		virtual SamplerPtr 	getSampler( FilteringMode 		filter,
-										TextureWrap			wrap,
-										float 				anisotropy) const
-										override;
-			
-		virtual void freeUnusedTextures() override;
+		SamplerPtr 	getSampler( FilteringMode 		filtering,
+								TextureWrap			wrap,
+								float 				anisotropy) const
+								override;
+										
+		TextureSlotPtr getTextureSlot( 	u8 textureUnit,
+										TexturePtr & texture,
+										SamplerPtr & sampler) override;
 		
-	private:
-	
-		u32 allocateTexture();
+		void setTextureSlot( 	RenderSlot & slot,
+								TextureSlotPtr & textureSlot) override;
+									 
+		TextureSlotPtr shallowCopy( TextureSlotPtr & textureSlot)  override;
+
+		void freeUnusedTextures() override;
 	};
 } // namespace GL3
 } // namespace Bade

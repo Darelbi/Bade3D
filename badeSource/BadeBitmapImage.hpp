@@ -28,7 +28,7 @@ namespace Bade{
 	// number going from 0 to 255. 
 	
 	// Alpha 0 => transparent .. Alpha 255 => full opaque
-	class BADE_API BitmapImage{
+	class BADE_API BitmapImage: public ManagedEntity{
 		
 		u8* pixels = nullptr;
 		u16	width;

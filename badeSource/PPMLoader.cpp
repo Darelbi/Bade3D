@@ -1,5 +1,8 @@
+#include "BadeBitmapImage.hpp"
+
+#include "ManageEngine.hpp"
 #include "PPMLoader.hpp"
-#include "Assert.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,14 +10,15 @@
 namespace Bade{
 namespace Deprecated{ //deprecated because originally created for quick tests
 	
-u8* LoadPPM_P3(const char * filename, u32 width, u32 height)
+Bade::BitmapImagePtr
+	LoadPPM_P3( Bade::ManageEngine< BitmapImage> & images, const char * filename)
 {
 	std::ifstream myfile;
 	myfile.open(filename);
 	
 	char p3[2];
 	
-	u32 d;
+	u32 d, width, height;
 	
 	if(! (myfile >> p3[0]) )
 		return nullptr;
@@ -37,26 +41,20 @@ u8* LoadPPM_P3(const char * filename, u32 width, u32 height)
 		return nullptr;
 	
 	if(d!=255)
-		return nullptr;		
+		return nullptr;
 	
-	u32 lineBytes = 3*width;
-	u32 lineSize = (lineBytes | 0x03) + 1; //next multiple of 4 for w*3
-	u32 padding  = lineSize - lineBytes; // by default OpenGL has 4 bytes alignment
-	u32 imageSize = lineSize*height;
+	auto image = images.allocate( width, height, false);
 	
-	u8 * image = new u8[imageSize];
+	bool error = false;
+	image->foreachPixelRGB( [&error, & myfile] ( u8 & r, u8 & g, u8 & b)
+	{
+		if( !(myfile>>r)) error = true;
+		if( !(myfile>>g)) error = true;
+		if( !(myfile>>b)) error = true;
+	});
 	
-	for(int i=0; i<imageSize; ){
-		for(int j=0; j<lineBytes; j++,i++){
-			u32 color;
-			if( !(myfile>>color)){
-				delete [] image;
-				return nullptr;
-			}
-			image[i] = color;
-		}
-		i+=padding;
-	}
+	if(error)
+		return nullptr;
 	
 	return image;
 }
