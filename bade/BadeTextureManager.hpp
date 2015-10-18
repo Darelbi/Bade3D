@@ -64,7 +64,7 @@ namespace Bade {
 									 TextureSlotPtr & textureSlot) = 0;
 									 
 		/** Preferred way to reuse a existing texture slot.*/
-		virtual TextureSlotPtr shallowCopy( TextureSlotPtr & textureSlot)  = 0
+		virtual TextureSlotPtr shallowCopy( TextureSlotPtr & textureSlot)  = 0;
 
 		/** Free textures that are currently not referenced by the user*/
 		virtual void freeUnusedTextures() = 0;

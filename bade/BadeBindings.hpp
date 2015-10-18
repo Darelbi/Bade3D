@@ -14,7 +14,9 @@ namespace Infector { //providing bindings for another framework is trivial
 
 namespace Bade {
 
-	/** Simple function. Add engine to your container.  */
-	void BADE_API wireEngine( Infector::Container & ioc);
+	/** Simple function. Add engine to your container. Choosing
+		to thread require substantial changes on application side, look
+		at examples. */
+	void BADE_API wireEngine( Infector::Container & ioc, bool threaded);
 
 } // namespace Bade 

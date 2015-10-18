@@ -4,6 +4,7 @@
 *******************************************************************************/
 #pragma once
 #include "BadeImageManager.hpp"
+#include "BadeBitmapImage.hpp"
 #include "ManageEngine.hpp"
 
 namespace Bade {

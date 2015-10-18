@@ -14,12 +14,12 @@ GL3TextureManager::GL3TextureManager(){
 }
 	
 TexturePtr GL3TextureManager::getTexture( 	BitmapImagePtr & image,
-								bool mipmaps){
+											bool mipmaps){
 									
 }
 								
-void GL3TextureManager::reloadTexture( BitmapImagePtr image,
-							TexturePtr & texture){
+void GL3TextureManager::reloadTexture( 	BitmapImagePtr image,
+										TexturePtr & texture){
 									
 }
 
@@ -27,20 +27,20 @@ TexturePtr GL3TextureManager::shallowCopy( TexturePtr & texture){
 									
 }
 
-SamplerPtr GL3TextureManager::getSampler( FilteringMode 		filtering,
-								TextureWrap			wrap,
-								float 				anisotropy) const{
+SamplerPtr GL3TextureManager::getSampler( 	FilteringMode 		filtering,
+											TextureWrap			wrap,
+											float 				anisotropy) const{
 									
 }
 								
 TextureSlotPtr GL3TextureManager::getTextureSlot( 	u8 textureUnit,
-										TexturePtr & texture,
-										SamplerPtr & sampler){
+													TexturePtr & texture,
+													SamplerPtr & sampler){
 									
 }
 
 void GL3TextureManager::setTextureSlot( RenderSlot & slot,
-							 TextureSlotPtr & textureSlot){
+										TextureSlotPtr & textureSlot){
 									
 }
 							 

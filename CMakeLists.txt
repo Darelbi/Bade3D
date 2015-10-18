@@ -198,6 +198,9 @@ if(BADE_INFECTORPP2_GLUE)
 										"forward configuration" FORCE)
 										
 	add_subdirectory( ${BADE_INFECTORPP2_DIR} ${CMAKE_BINARY_DIR}/Infectorpp2)
+	
+	include_directories( ${BADE_INFECTORPP2_DIR}/include/Infectorpp )
+	
 endif()
 
 
@@ -252,7 +255,7 @@ function(create_test parm) #tests helper function
 
 	add_dependencies( build_and_test ${ExeName})
 
-	target_include_directories( ${ExeName} PUBLIC "badeSource")
+	include_directories(  "badeSource")
 
 	add_test( ${ExeName} ${ExeName})
 

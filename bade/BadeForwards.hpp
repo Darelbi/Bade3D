@@ -59,10 +59,16 @@ namespace Bade{
     /* Char. */
     //typedef char    c8; //just use "const char *" if needed
 	
+	template< typename T=int>
+	class ManageEngine;
+	
 	// Managed types: low overhead reference counting.
 	class BADE_API ManagedEntity{
 		u32 referenceCount = 1;
 		friend class ManagedDeleter;
+		
+		template <typename T>
+		friend class ManageEngine;
 	protected:
 		inline void referenceIncrement(){ referenceCount++; }
 	public:
