@@ -17,7 +17,9 @@ namespace Bade {
 			
 		for( TextureOption & elem: textureOptions)
 			if( sameString( elem.name, name) )
+			{
 				assert( false && "same name already used as texture hook" );
+			}
 		
 		vertexOptions.emplace_back( VertexOption{ name, attr, normalized});
 	}
