@@ -21,23 +21,29 @@ namespace GL3 {
 		bool						firstRun = true;
 		GL3State					baseState;
 		GL3State					lastState;
-		RenderPass			*		currentState; //pointer avoid copying
+		RenderPass			       *currentState; //pointer avoid copying
 
 		ProxyPtr					asyncProxy;
-		
+
 		void minimizeClearStates(	GL3State & lastState,
 									const RenderPass & pass);
 
 		void minimizePassStates(	GL3State & lastState,
 									const RenderPass & pass);
-									
+
+		void minimizeSlotStates(	GL3State & lastState,
+									const RenderSlot & slot);
+
 		void markDirtyBuffers(		GL3State & lastState);
-		
+
 	public:
 
 		GL3RenderQueue( ProxyPtr proxy);
 
-		void compileStates( StdList< RenderPass> & passes) override;
+		// resource loading is performed before compiling so that
+		// all referenced Ids are valid (unless resource loading failed)
+		bool compileStates( StdList< RenderPass> & passes) override;
+
 	};
 
 } // namespace GL3

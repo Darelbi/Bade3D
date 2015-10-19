@@ -45,24 +45,31 @@ namespace Bade {
 		virtual void reloadTexture( BitmapImagePtr image,
 									TexturePtr & texture) = 0;
 
-		/** Preferred way to reuse a existing texture. SHALLOW COPY */
+		/** Preferred way to reuse a existing texture. */
 		virtual TexturePtr  shallowCopy( TexturePtr & texture) = 0;
-
-		/** Preferred way to reuse a existing texture. SHALLOW COPY */
-		virtual SamplerPtr  shallowCopy( SamplerPtr & sampler) = 0;
 
 		/** Retrieve a texture sampler object. */
 		virtual SamplerPtr 	getSampler( FilteringMode 		filtering,
 										TextureWrap			wrap,
 										float 				anisotropy) const
 										= 0;
+		/**	Get a textureSlot*/							
+		virtual TextureSlotPtr getTextureSlot( 	u8 textureUnit,
+												TexturePtr & texture,
+												SamplerPtr & sampler) = 0;
+		
+		/** Utility to performn sanity checking when adding a texture to 
+			a slot. Cause assertion failure if same unit already used. */
+		virtual void setTextureSlot( RenderSlot & slot,
+									 TextureSlotPtr & textureSlot) = 0;
+									 
+		/** Preferred way to reuse a existing texture slot.*/
+		virtual TextureSlotPtr shallowCopy( TextureSlotPtr & textureSlot)  = 0;
 
-		/** Free textures that are currently not referenced by the user
-			(if you have a pointer to a texture you are referencing it)*/
+		/** Free textures that are currently not referenced by the user*/
 		virtual void freeUnusedTextures() = 0;
 
 		/** Allow destruct derived classes from this pointer.*/
 		virtual ~TextureManager(){}
-
 	};
 } // namespace Bade

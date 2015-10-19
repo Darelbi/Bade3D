@@ -3,28 +3,21 @@
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #include "GL3TextureManager.hpp"
+#include "GL3Texture.hpp"
 #include "../BadeImageManager.hpp"
 
 namespace Bade {
 namespace GL3 {
 	
-GL3TextureManager::GL3TextureManager(
-					ResourceQueuePtr	newloader,
-					ImageManagerPtr		newimageManager)
+GL3TextureManager::GL3TextureManager()
 {
-	resourceLoader	= newloader;
-	imageManager	= newimageManager;
-}
 
-u32 GL3TextureManager::allocateTexture(){
-	//push new or overwrite old
-	
 }
 
 TexturePtr GL3TextureManager::getTexture( 	BitmapImagePtr & image,
 											bool mipmaps = true)
 {
-	u32 textureIndex = allocateTexture();
+	/*u32 textureIndex = allocateTexture();
 	
 	GL3Texture * texture = &referencedTextures[textureIndex];
 	
@@ -51,7 +44,7 @@ TexturePtr GL3TextureManager::getTexture( 	BitmapImagePtr & image,
 		GL_UNSIGNED_BYTE, // type
 		res_texture->pixels);
 								
-	return TexturePtr(texture);
+	return TexturePtr(texture);*/
 }
 
 void GL3TextureManager::reloadTexture(	BitmapImagePtr & image,
@@ -63,17 +56,17 @@ void GL3TextureManager::reloadTexture(	BitmapImagePtr & image,
 TexturePtr GL3TextureManager::getTexture( 	const BitmapImage & image,
 											bool mipmaps)
 {
-	u32 textureIndex = allocateTexture();
+	/*u32 textureIndex = allocateTexture();
 	
 	GL3Texture * texture = &referencedTextures[textureIndex];
 	
 	texture->mipmaps 		= mipmaps;
-	texture->engineHandel 	= textureIndex;
+	texture->engineHandle 	= textureIndex;
 	texture->nativeHandle	= 0;
 	texture->format			= image.hasAlphaChannel() ? 
 								InternalFormat. RGBA : InternalFormat. RGB;
 								
-	return TexturePtr(texture);
+	return TexturePtr(texture);*/
 }
 	
 TexturePtr  GL3TextureManager::clone( TexturePtr & texture){

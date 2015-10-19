@@ -6,11 +6,13 @@
 #include <memory>
 
 #ifndef BADE_API
+
+	#define BADE_API
+	
     #if defined( __WIN32__ ) || defined( _WIN32 )
             /**
                 On Windows we need special threatment for DLLs.
-            */
-            #define BADE_API
+            */    
             #ifdef BADE_BUILD_DLL
                     #undef BADE_API
                     #define BADE_API __declspec(dllexport)
@@ -57,12 +59,18 @@ namespace Bade{
 #endif
 
     /* Char. */
-    typedef char    c8;
+    //typedef char    c8; //just use "const char *" if needed
+	
+	template< typename T=int>
+	class ManageEngine;
 	
 	// Managed types: low overhead reference counting.
 	class BADE_API ManagedEntity{
 		u32 referenceCount = 1;
 		friend class ManagedDeleter;
+		
+		template <typename T>
+		friend class ManageEngine;
 	protected:
 		inline void referenceIncrement(){ referenceCount++; }
 	public:
@@ -80,19 +88,23 @@ namespace Bade{
 	
 	// Compile time configuration of the engine. 
 	// If you change ANY of the values you have to RECOMPILE the engine and
-	// any application using it.
+	// any application using it. 
 	struct BADE_API Configuration
 	{
-		static const u32	textureUnits = 32;
+		static const u32	textureUnits 	 = 32;
+		static const u32	uniformUnits 	 = 32;
+		static const u32	vertexAttributes = 8;
 	};
 	
 	// Forward declarations
 	class RenderQueue;
 	class RenderPass;
 	class RenderSlot;
+	class TextureSlot;
 	
 	class TextureManager;
 	class ImageManager;
+	class ShaderManager;
 
 	class ColorRGB;
 	class ColorRGBA;
@@ -100,32 +112,57 @@ namespace Bade{
 
 	class Texture;
 	class Sampler;
-	class RenderTexture;
+	class MeshBuffer;
+	class IndexBuffer;
+	
+	class VertexMain;
+	class FragmentMain;
+	class Shader;
+	class ShaderOptions;
 
 	class TextureVisitor;
 	class RenderTextureVisitor;
 	
 	//Forwards declaration of enums
-	enum struct InternalFormat: u8;
-	enum struct InternalWriteFormat: u8;
+		
+	enum struct InternalFormat: u8; //BadeTexture.hpp
+		
+	enum struct InternalWriteFormat: u8; //BadeTextureManager.hpp
 	enum struct FilteringMode: u8;
 	enum struct TextureWrap: u8;
 	
+	enum struct TextureType: u8;	//BadeShaderOptions.hpp
+	enum struct VertexAttribute: u8; 
+	
 	//Forward declarations of smart pointer types
 	using RenderQueuePtr	= std::shared_ptr< RenderQueue>;
+	using ImageManagerPtr	= std::shared_ptr< ImageManager>;
+	using TextureManagerPtr = std::shared_ptr< TextureManager>;
+	using ShaderManagerPtr	= std::shared_ptr< ShaderManager>;
 	
 	/** ForeignBuffer allows accessing data in pointer arrays but prevent
 		accidental deletion. Makes clear you do not own the pointer.*/
 	template< typename T>
 	using ForeignBuffer		= std::unique_ptr< T[],				NoDeleter<T>>;
 	
-	using BitmapImagePtr    = std::unique_ptr< BitmapImage,		ManagedDeleter>;
-
-	using TexturePtr 		= std::unique_ptr< Texture,       	ManagedDeleter>;
-	using RenderTexturePtr	= std::unique_ptr< RenderTexture, 	ManagedDeleter>;
-	using SamplerPtr 		= std::unique_ptr< Sampler, 		ManagedDeleter>;
+	template< typename T>
+	using ManagedResource 	= std::unique_ptr< T, 				ManagedDeleter>;
 	
-	using ImageManagerPtr	= std::shared_ptr< ImageManager>;
-	using TextureManagerPtr = std::shared_ptr< TextureManager>;
-
+	//
+	//  RESOURCES: whethever you have any of the following pointers
+	//	that's mean you have actually allocated somewhere a resource
+	//	on GPU or on SYSTEM. Each "managed unique_ptr" can be copied
+	// 	using only the corresponding manager (You cannot accidentally
+	//	create a resource leak because you need a explicit dependency
+	//	on its manager when you want to reuse same resource)
+	//
+	using BitmapImagePtr	= ManagedResource< BitmapImage >;
+	using TexturePtr		= ManagedResource< Texture >;
+	using SamplerPtr		= ManagedResource< Sampler >;
+	using MeshBufferPtr		= ManagedResource< MeshBuffer >;
+	using IndexBufferPtr	= ManagedResource< IndexBuffer >;
+	using ShaderPtr			= ManagedResource< Shader >;
+	using ShaderOptionsPtr	= ManagedResource< ShaderOptions >;
+	using TextureSlotPtr	= ManagedResource< TextureSlot >;
+	
 } // namespace Bade

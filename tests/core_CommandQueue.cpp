@@ -1,3 +1,7 @@
+/*******************************************************************************
+   Copyright (C) 2015 Dario Oliveri
+   See copyright notice in LICENSE.md
+*******************************************************************************/
 #include "Catch.hpp"
 #include "TestHelpers.hpp"
 #include <CommandQueue.hpp>

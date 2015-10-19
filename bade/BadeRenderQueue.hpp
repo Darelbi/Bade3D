@@ -1,5 +1,5 @@
 /*******************************************************************************
-   Copyright (C) 2014-2015 Dario Oliveri
+   Copyright (C) 2015 Dario Oliveri
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #pragma once
@@ -16,8 +16,9 @@ namespace Bade {
 
 	public:
 	
-		/** Setup a new RenderQueue. */	
-		virtual void compileStates( StdList< RenderPass> & passes) = 0;
+		/** Setup a new RenderQueue. If return false you should get
+			the error log and see what's wrong.*/	
+		virtual bool compileStates( StdList< RenderPass> & passes) = 0;
 
 		virtual ~RenderQueue(){}
 	};

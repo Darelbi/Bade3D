@@ -1,12 +1,12 @@
 /*******************************************************************************
-   Copyright (C) 2014-2015 Dario Oliveri
+   Copyright (C) 2015 Dario Oliveri
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #pragma once
 #include "BadeForwards.hpp"
-#include "BadeRenderSlot.hpp"
 #include "BadeStdVector.hpp"
 #include "BadeMiniArrays.hpp"
+#include "BadeRenderSlot.hpp"
 
 namespace Bade {
 
@@ -46,6 +46,9 @@ namespace Bade {
 		
 	public:
 	
+		RenderPass( RenderPass && other) = default;
+		RenderPass &operator=( RenderPass && other) = default;
+	
 		// alpha 0 is transparent
 		float4	color			= float4( 0.f, 0.f, 0.f, 0.f);			
 
@@ -76,16 +79,5 @@ namespace Bade {
 		const char *name		= nullptr; // debugging name
 		
 		StdVector< RenderSlot>	slots;
-	};
-	
-	class BADE_API RenderTargetPass: public RenderPass{
-		
-	};
-	
-	class BADE_API RenderToVertexPass{
-	public:
-	
-	};
-	
-	
+	};	
 } // namespace Bade
