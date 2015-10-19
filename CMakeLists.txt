@@ -232,7 +232,7 @@ if( NOT ${BADE_ENABLE_TESTS})
 endif()
 
 enable_testing()
-add_library( libCatch SHARED tests/catch.cxx)
+add_library( libCatch STATIC tests/catch.cxx)
 add_custom_target(build_and_test ${CMAKE_CTEST_COMMAND} -V)
 
 set_target_properties( libCatch	PROPERTIES
