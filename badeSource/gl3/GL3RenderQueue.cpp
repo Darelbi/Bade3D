@@ -20,7 +20,7 @@ namespace GL3 {
 		asyncProxy = proxy;
 	}
 
-	bool GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
+	void GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
 
 		lastState = baseState;
 
