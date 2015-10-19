@@ -8,10 +8,6 @@
 
 namespace Bade {
 	
-	struct BADE_API TextureSlot: public ManagedEntity {
-	
-	};
-	
 	enum struct DrawMode: u8{
 		Points,
 		Line,

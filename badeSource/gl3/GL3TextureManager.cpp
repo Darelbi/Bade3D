@@ -4,6 +4,8 @@
 *******************************************************************************/
 #include "GL3TextureManager.hpp"
 #include "GL3Texture.hpp"
+#include "../BadeSampler.hpp"
+#include "../BadeTextureSlot.hpp"
 #include "../BadeImageManager.hpp"
 
 namespace Bade {

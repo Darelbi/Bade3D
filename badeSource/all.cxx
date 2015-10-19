@@ -4,6 +4,7 @@
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/CommandQueue.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/ConcreteImageManager.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/ConcreteRenderer.cpp"
+#include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/ConcreteSampler.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/ConcreteShaderOptions.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/PortableBindings.cpp"
 #include "C:/Users/Dario/Documents/GitHub/Bade3D/badeSource/PPMLoader.cpp"
