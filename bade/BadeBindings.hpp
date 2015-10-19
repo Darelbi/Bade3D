@@ -3,7 +3,7 @@
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #pragma once
-#include "BadeTypes.hpp"
+#include "BadeForwards.hpp"
 #include <memory>
 
 // Forward declarations
