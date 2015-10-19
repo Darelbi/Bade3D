@@ -7,18 +7,6 @@
 
 namespace Bade {
 
-	enum struct FilteringMode: u8{
-        Nearest,
-        Bilinear,
-        Trilinear,
-		Anisotropic
-    };
-
-	enum struct TextureWrap: u8{
-        Clamp,
-        Repeat
-    };
-
 	/** Subset of texture formats suitable for rendering to texture.*/
 	enum struct InternalWriteFormat: u8{
         RGBA8,				// ubyte4

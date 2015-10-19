@@ -5,13 +5,15 @@
 #pragma once
 #include "../BadeRenderPass.hpp"
 #include "../BadeRenderSlot.hpp"
+#include "../BadeTextureSlot.hpp"
 #include "../PortableGraphics.hpp" // GL header
 
 
 namespace Bade {
 namespace GL3 {
 	
-	struct GL3TextureUnit: public TextureSlot{
+	class GL3TextureUnit: public TextureSlot{
+	public:
 		NativeHandle	texture = 0;
 		NativeHandle	sampler = 0;
 		NativeEnum		target;

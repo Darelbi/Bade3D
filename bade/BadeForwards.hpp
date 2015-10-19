@@ -6,11 +6,13 @@
 #include <memory>
 
 #ifndef BADE_API
+
+	#define BADE_API
+	
     #if defined( __WIN32__ ) || defined( _WIN32 )
             /**
                 On Windows we need special threatment for DLLs.
-            */
-            #define BADE_API
+            */    
             #ifdef BADE_BUILD_DLL
                     #undef BADE_API
                     #define BADE_API __declspec(dllexport)
@@ -65,7 +67,7 @@ namespace Bade{
 	// Managed types: low overhead reference counting.
 	class BADE_API ManagedEntity{
 		u32 referenceCount = 1;
-		friend class ManagedDeleter;
+		friend struct ManagedDeleter;
 		
 		template <typename T>
 		friend class ManageEngine;
@@ -104,8 +106,8 @@ namespace Bade{
 	class ImageManager;
 	class ShaderManager;
 
-	class ColorRGB;
-	class ColorRGBA;
+	struct ColorRGB;
+	struct ColorRGBA;
 	class BitmapImage;
 
 	class Texture;
