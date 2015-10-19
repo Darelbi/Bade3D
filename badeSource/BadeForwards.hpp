@@ -67,7 +67,7 @@ namespace Bade{
 	// Managed types: low overhead reference counting.
 	class BADE_API ManagedEntity{
 		u32 referenceCount = 1;
-		friend class ManagedDeleter;
+		friend struct ManagedDeleter;
 		
 		template <typename T>
 		friend class ManageEngine;
@@ -106,8 +106,8 @@ namespace Bade{
 	class ImageManager;
 	class ShaderManager;
 
-	class ColorRGB;
-	class ColorRGBA;
+	struct ColorRGB;
+	struct ColorRGBA;
 	class BitmapImage;
 
 	class Texture;
