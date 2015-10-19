@@ -26,7 +26,7 @@ endif()
 # Use the following options to customize the build
 #==============================================================================
 
-set( BADE_TARGET_NAME "GCC_492" CACHE STRING
+set( BADE_TARGET_NAME "target" CACHE STRING
     "Name for a build target, needed for different OSes or compilers")
 
 
@@ -60,10 +60,6 @@ set( BADE_UNITY_BUILD false CACHE BOOL
 	
 set( BADE_ENABLE_PROFILING false CACHE BOOL
 	"choose TRUE if you want to compile using the native profiler")
-	
-	
-set( BADE_ENABLE_EXCEPTIONS false CACHE BOOL
-	"TRUE enable infectorpp2 to throw instead of fail (certain) assertions")
 	
 	
 set( BADE_ENABLE_TESTS true CACHE BOOL
@@ -187,13 +183,13 @@ if(BADE_INFECTORPP2_GLUE)
 										"forward configuration" FORCE)
 										
 	set( 	INFECTORPP2_ENABLE_EXCEPTIONS 
-			${BADE_ENABLE_EXCEPTIONS}
+			TRUE
 										CACHE INTERNAL 
 										"forward configuration" FORCE)
 	
 	#enable tests only if user has exceptions
 	set( 	INFECTORPP2_ENABLE_TESTS 
-			${BADE_ENABLE_EXCEPTIONS} AND ${BADE_ENABLE_TESTS}
+			FALSE
 										CACHE INTERNAL 
 										"forward configuration" FORCE)
 										

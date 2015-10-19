@@ -10,8 +10,9 @@ namespace Bade {
 
 	void BADE_API wireEngine( Infector::Container & ioc, bool threaded){
 		
-		portableWireEngine(ioc, threaded);
+		portableBindEngine( ioc, threaded);
 		
+		portableWireEngine( ioc, threaded);	
 	}
 
 } // namespace Bade 
