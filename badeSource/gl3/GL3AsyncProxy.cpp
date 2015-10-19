@@ -3,12 +3,14 @@
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #include "GL3AsyncProxy.hpp"
-#include "../PortableGraphics.hpp"
 #include <iostream>
 
 namespace Bade {
 namespace GL3 {
 	
+	#ifdef GL
+		#error "Check inclusion of GL headers."
+	#endif
 	#define GL gl::_detail
 	
 	template< typename T>
@@ -262,6 +264,66 @@ namespace GL3 {
 			default:  					zspass = gl::KEEP; break;
 		}
 		queue.pushCommand( _setStencilOp, zspass);
+	}
+	
+	
+	void _useProgram( u8* p){
+		parms< NativeHandle> parm{ p};
+		GL::UseProgram(*parm);
+	}
+	void GL3AsyncProxy::useProgram( NativeHandle program){
+		queue.pushCommand( _useProgram, program);
+	}
+	
+	
+	void _activeTextureUnit( u8* p){
+		parms< NativeEnum> parm{ p};
+		GL::ActiveTexture(*parm);
+	}
+	void GL3AsyncProxy::activeTextureUnit( u32 unit){
+		NativeEnum textureUnit = Graphics::texture0 + unit;
+		queue.pushCommand( _activeTextureUnit, textureUnit);
+	}
+	
+	
+	struct bindSamplerParm{
+		NativeHandle	unit;
+		NativeHandle	sampler;
+	};
+	void _bindSampler( u8* p){
+		parms< bindSamplerParm> parm{ p};
+		GL::BindSampler( parm->unit, parm->sampler);
+	}
+	void GL3AsyncProxy::bindSampler( NativeHandle unit, NativeHandle sampler ){
+		bindSamplerParm parm;
+		parm.unit = unit;
+		parm.sampler = sampler;
+		queue.pushCommand( _bindSampler, parm);
+	}
+	
+	
+	struct bindTextureParm{
+		NativeEnum 		target;
+		NativeHandle	texture;
+	};
+	void _bindTexture( u8* p){
+		parms< bindTextureParm> parm{ p};
+		GL::BindTexture( parm->target, parm->texture);
+	}
+	void GL3AsyncProxy::bindTexture( NativeEnum target, NativeHandle texture){
+		bindTextureParm parm;
+		parm.target = target;
+		parm.texture = texture;
+		queue.pushCommand( _bindTexture, parm);
+	}
+	
+	
+	void _setVao( u8* p){
+		parms< NativeHandle> parm{ p};
+		GL::BindVertexArray( *parm);
+	}
+	void GL3AsyncProxy::setVao( NativeHandle vao){
+		queue.pushCommand( _setVao, vao);
 	}
 	#undef GL
 } // namespace GL3

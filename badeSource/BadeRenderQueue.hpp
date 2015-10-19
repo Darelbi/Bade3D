@@ -16,8 +16,9 @@ namespace Bade {
 
 	public:
 	
-		/** Setup a new RenderQueue. */	
-		virtual void compileStates( StdList< RenderPass> & passes) = 0;
+		/** Setup a new RenderQueue. If return false you should get
+			the error log and see what's wrong.*/	
+		virtual bool compileStates( StdList< RenderPass> & passes) = 0;
 
 		virtual ~RenderQueue(){}
 	};

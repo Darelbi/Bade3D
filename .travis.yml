@@ -1,0 +1,64 @@
+language: cpp
+matrix:
+  include:
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'kalakris-cmake']
+          packages: ['g++-4.8', 'cmake']
+      env: COMPILER=g++-4.8
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'kalakris-cmake']
+          packages: ['g++-4.9', 'cmake']
+      env: COMPILER=g++-4.9
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'kalakris-cmake']
+          packages: ['g++-5', 'cmake']
+      env: COMPILER=g++-5
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5', 'kalakris-cmake']
+          packages: ['clang-3.5', 'cmake']
+      env: COMPILER=clang++-3.5
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6', 'kalakris-cmake']
+          packages: ['clang-3.6', 'cmake']
+      env: COMPILER=clang++-3.6
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7', 'kalakris-cmake']
+          packages: ['clang-3.7', 'cmake']
+      env: COMPILER=clang++-3.7
+
+    - os: osx
+      compiler: clang
+      env: COMPILER=clang++
+
+before_script: 
+  - $COMPILER --version
+  - cmake --version 
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE:STRING=release -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_CC_COMPILER=$COMPILER -DBADE_INFECTORPP2_DIR:PATH="dependencies/Infectorpp" -DBADE_UNITY_BUILD:BOOL=true
+  
+script: make VERBOSE=1 && make test

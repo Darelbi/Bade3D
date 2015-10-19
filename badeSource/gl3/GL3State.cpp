@@ -26,6 +26,12 @@ namespace GL3 {
 		blendMode = BlendMode::Opaque;
 		lastBlendMode = BlendMode::Opaque;
 		clearColor = float4( 0.f, 0.f, 0.f, 0.f);
+		activeTextureUnit = -1;
+		
+		for( int i=0; i<Configuration::textureUnits; i++){
+			textures[i].unit		= 0;
+			texturesCache[i].unit	= 0;
+		}
 	}
 } // namespace GL3
 } // namespace Bade

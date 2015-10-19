@@ -21,9 +21,14 @@
     /** glLoadGen generated file, Desktop. */
     #include "gl3/gl_core_3_3.hpp"
 	namespace Bade{
-		using NativeHandle = GLuint;
+		using NativeHandle 	= GLuint;
+		using NativeEnum	= GLenum;
+		struct Graphics
+		{
+			static const NativeEnum texture0 = gl::TEXTURE0;
+		};
 	}
     
 #endif
 
-//  currently no WindowsPhone. No GL, so "party later maybe"
+//  currently no WindowsPhone. it has no GL :/
