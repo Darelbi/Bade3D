@@ -20,7 +20,7 @@ namespace GL3 {
 		asyncProxy = proxy;
 	}
 
-	void GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
+	bool GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
 
 		lastState = baseState;
 
@@ -38,6 +38,8 @@ namespace GL3 {
 			for( RenderSlot & slot : pass.slots)
 				minimizeSlotStates( lastState, slot);
 		}
+		
+		return true;
 	}
 
 	// ===========================================================

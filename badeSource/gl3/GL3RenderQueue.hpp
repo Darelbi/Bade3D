@@ -42,7 +42,7 @@ namespace GL3 {
 
 		// resource loading is performed before compiling so that
 		// all referenced Ids are valid (unless resource loading failed)
-		void compileStates( StdList< RenderPass> & passes) override;
+		bool compileStates( StdList< RenderPass> & passes) override;
 
 	};
 
