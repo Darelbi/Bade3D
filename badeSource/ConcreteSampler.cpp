@@ -7,11 +7,11 @@
 namespace Bade{
 	
 	FilteringMode ConcreteSampler::getFilteringMode() const{
-		FilteringMode::Bilinear;
+		return FilteringMode::Bilinear;
 	}
 
 	TextureWrap ConcreteSampler::getTextureWrap() const{
-		TextureWrap::Clamp;
+		return TextureWrap::Clamp;
 	}
 
 	float ConcreteSampler::getAnisotropy() const{
