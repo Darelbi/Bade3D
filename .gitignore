@@ -5,3 +5,4 @@ doc
 /Log_Profiling.txt
 /Log_TestsResult.txt
 /*.bat
+/badeSource/all.cxx
