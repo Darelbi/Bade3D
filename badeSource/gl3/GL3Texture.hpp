@@ -20,7 +20,6 @@ public:
 	virtual InternalFormat getInternalFormat() const override;
 
 	NativeHandle	nativeHandle;
-	u32				engineHandle;
 	bool    		mipmaps;
 	InternalFormat  format;
 };	

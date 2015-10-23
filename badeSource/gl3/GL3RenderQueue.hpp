@@ -4,14 +4,13 @@
 *******************************************************************************/
 #pragma once
 #include "../BadeRenderQueue.hpp"
+
+#include "GL3Forwards.hpp"
 #include "GL3State.hpp"
 
 
 namespace Bade {
 namespace GL3 {
-
-	class GL3AsyncProxy;
-	using ProxyPtr = std::shared_ptr< GL3AsyncProxy>;
 
 	/** This is the place where Main Thread communicates with Render thread.
 		You just add some renderpasses and then submit them for rendering.

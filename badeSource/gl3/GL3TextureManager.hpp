@@ -6,6 +6,7 @@
 #include "../BadeTextureManager.hpp"
 #include "../BadeStdVector.hpp"
 #include "../ManageEngine.hpp"
+#include "GL3Forwards.hpp"
 
 
 namespace Bade {	
@@ -19,10 +20,11 @@ namespace GL3 {
 	class GL3TextureManager: public TextureManager{
 		
 		ManageEngine< GL3Texture>	textures;
+		ProxyPtr					asyncProxy;
 		
 	public:
 	
-		GL3TextureManager();
+		GL3TextureManager( ProxyPtr proxy);
 	
 		TexturePtr getTexture( 	BitmapImagePtr & image,
 								bool mipmaps) override;

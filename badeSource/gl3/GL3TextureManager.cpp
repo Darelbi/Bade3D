@@ -4,25 +4,42 @@
 *******************************************************************************/
 #include "GL3TextureManager.hpp"
 #include "GL3Texture.hpp"
+#include "GL3AsyncProxy.hpp"
 #include "../BadeSampler.hpp"
 #include "../BadeTextureSlot.hpp"
 #include "../BadeImageManager.hpp"
+#include "../BadeBitmapImage.hpp"
 
 namespace Bade {
 namespace GL3 {
 
-GL3TextureManager::GL3TextureManager(){
-
+GL3TextureManager::GL3TextureManager( ProxyPtr proxy){
+	asyncProxy = proxy;
 }
 
 TexturePtr GL3TextureManager::getTexture( 	BitmapImagePtr & image,
 											bool mipmaps){
-	return nullptr;
+	
+	auto bitmap   = textures.shallowCopyAsEntity( image);
+	auto texture = textures.allocate();
+	
+	asyncProxy->addEntity( std::move(bitmap));
+	asyncProxy->addEntity( textures.shallowCopyAsEntity(texture));
+	
+	texture->nativeHandle = 0;
+	texture->mipmaps = mipmaps;
+	texture->format = image->hasAlphaChannel()?
+											InternalFormat::RGBA :
+											InternalFormat::RGB;
+											
+	asyncProxy->loadBitmapTexture( texture.get(), image.get(), mipmaps );
+	
+	return texture;
 }
 
 void GL3TextureManager::reloadTexture( 	BitmapImagePtr image,
 										TexturePtr & texture){
-
+	// asyncProxy->updateBitmapTexture
 }
 
 TexturePtr GL3TextureManager::shallowCopy( TexturePtr & texture){

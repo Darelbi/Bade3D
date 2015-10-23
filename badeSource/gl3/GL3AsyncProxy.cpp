@@ -3,7 +3,9 @@
    See copyright notice in LICENSE.md
 *******************************************************************************/
 #include "GL3AsyncProxy.hpp"
-#include <iostream>
+#include "GL3Texture.hpp"
+
+#include "../BadeBitmapImage.hpp"
 
 namespace Bade {
 namespace GL3 {
@@ -36,7 +38,7 @@ namespace GL3 {
 		executor->submitRendering( queue, true);
 	}
 
-	
+
 	void GL3AsyncProxy::submitAsRender(){
 		executor->submitRendering( queue, false);
 	}
@@ -344,6 +346,45 @@ namespace GL3 {
 	}
 	void GL3AsyncProxy::setVao( NativeHandle vao){
 		queue.pushCommand( _setVao, vao);
+	}
+
+
+	struct loadBitmapTextureParm{
+		GL3Texture * 	texture;
+		BitmapImage * 	image;
+		bool 			mipmaps;
+	};
+	void _loadBitmapTexture( u8* p){
+		parms< loadBitmapTextureParm> parm{ p};
+		
+		bool alpha = parm->image->hasAlphaChannel();
+		
+		GL3Texture * 	texture = parm->texture;
+		BitmapImage * 	image   = parm->image;
+
+		GL::GenTextures( 1, &texture->nativeHandle);
+		GL::BindTexture( gl::TEXTURE_2D, texture->nativeHandle);
+
+		GL::TexImage2D( gl::TEXTURE_2D,  				// target
+						0,								// base level
+						alpha? gl::RGBA8: gl::RGB8,		// internal format
+						image->getWidth(),
+						image->getHeight(),
+						0,								// border
+						alpha? gl::RGBA: gl::RGB,		// format
+						gl::UNSIGNED_BYTE,				// type
+						image->getBitmapBuffer().get() //data
+						);
+						
+		if(parm->mipmaps)
+			GL::GenerateMipmap( gl::TEXTURE_2D);
+	}
+	void GL3AsyncProxy::loadBitmapTexture( GL3Texture * t, BitmapImage * i, bool mip){
+		loadBitmapTextureParm parm;
+		parm.texture = t;
+		parm.image   = i;
+		parm.mipmaps = mip;
+		queue.pushCommand( _loadBitmapTexture, parm);
 	}
 	#undef GL
 } // namespace GL3

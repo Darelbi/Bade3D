@@ -7,6 +7,8 @@
 #include "../QueueExecutor.hpp"
 #include "../PortableGraphics.hpp"
 
+#include "GL3Forwards.hpp"
+
 namespace Bade {
 namespace GL3 {
 	
@@ -71,6 +73,9 @@ namespace GL3 {
 	void _bindTexture( u8*);
 	
 	void _setVao( u8*);
+	
+	struct loadBitmapTextureParm;
+	void _loadBitmapTexture( u8*);
 	
 	class GL3AsyncProxy{
 		
@@ -140,6 +145,8 @@ namespace GL3 {
 		void bindTexture( NativeEnum target, NativeHandle texture);
 		
 		void setVao( NativeHandle vao);
+		
+		void loadBitmapTexture( GL3Texture * t, BitmapImage * i, bool mip);
 	};
 } // namespace GL3
 } // namespace Bade

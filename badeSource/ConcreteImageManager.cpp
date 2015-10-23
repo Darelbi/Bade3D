@@ -11,11 +11,7 @@ namespace Bade {
 	BitmapImagePtr ConcreteImageManager::
 					loadPPMImage( const char * filename){
 						
-		auto a = Deprecated::LoadPPM_P3( images, filename);
-		
-		images.shallowCopyAsEntity(a);
-		
-		return a;
+		return Deprecated::LoadPPM_P3( images, filename);
 	}
 	
 	void ConcreteImageManager::freeUnusedImages(){
