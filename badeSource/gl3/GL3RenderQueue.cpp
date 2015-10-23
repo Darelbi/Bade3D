@@ -25,6 +25,8 @@ namespace GL3 {
 		// Before rendering, perform resource loading. We can assume
 		// hence that rendering is consistent with loaded resources.
 		asyncProxy->submitAsLoad();
+		
+		return true;
 	}
 
 	bool GL3RenderQueue::compileStates( StdList< RenderPass> & passes){

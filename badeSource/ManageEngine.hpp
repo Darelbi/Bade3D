@@ -106,7 +106,7 @@ namespace Bade {
 			if( quantity > entries.size())
 				quantity = entries.size();
 			
-			for( int i=0; i<quantity; i++){
+			for( u32 i=0; i<quantity; i++){
 				
 				gcCounter++;
 				if(gcCounter >= entries.size())
