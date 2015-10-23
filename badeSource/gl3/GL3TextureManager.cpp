@@ -34,7 +34,7 @@ TexturePtr GL3TextureManager::getTexture( 	BitmapImagePtr & image,
 											
 	asyncProxy->loadBitmapTexture( texture.get(), image.get(), mipmaps );
 	
-	return texture;
+	return textures.cast< Texture>( texture);
 }
 
 void GL3TextureManager::reloadTexture( 	BitmapImagePtr image,
