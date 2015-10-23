@@ -37,6 +37,7 @@ namespace Bade{
 			the argument so you can use it again.
 			If this submit is a "resource loading" queue, tell that
 			so that engine will execute it exactly once.*/
-		void submitRendering( CommandQueue &, bool resourceLoading);
+		void submitRendering( CommandQueue &, 
+							  bool resourceLoading);
 	};
 } // namespace Bade

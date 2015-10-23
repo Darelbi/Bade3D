@@ -10,12 +10,13 @@
 namespace Bade {
 
 	typedef void (*Command)( u8* parm);
-	using   Callback = std::pair<Command, u32>;
+	using   Callback = std::pair< Command, u32>;
 
 	class CommandQueue{
 
 		std::vector<u8>  		parms;
 		std::vector<Callback>	commands;
+		std::vector<EntityPtr>	entities;
 		u32						currentByte = 0;
 		u32						currentCommand = 0;
 
@@ -23,15 +24,20 @@ namespace Bade {
 
 		CommandQueue();
 
-		CommandQueue(CommandQueue &&) = default;
+		CommandQueue( CommandQueue &&) = default;
 		CommandQueue& operator=( CommandQueue&&) = default;
-
+		
+		// store a entity to increase reference count as long as needed
+		// to make it available for GPU.
+		void addEntity( EntityPtr && entity);
+		
+		u32 getEntityCount();
 
 		template< typename T>
 		void pushCommand( 	Command	function,
 							T		&parameter)
 		{
-			commands.emplace_back( std::make_pair(function, currentByte));
+			commands.emplace_back( std::make_pair( function, currentByte));
 
 			for( int i=0; i<sizeof(T); i++, currentByte++)
 				parms.emplace_back( ((u8*)&parameter)[i]);
@@ -39,14 +45,13 @@ namespace Bade {
 		
 		void pushCommand( 	Command	function)
 		{
-			commands.emplace_back( std::make_pair(function, currentByte));
+			commands.emplace_back( std::make_pair( function, currentByte));
 		}
 
 		void executeAll();
 
 		/** Clear data (make the buffer empty, but reallocation is delayed by 1 frame,
-			if in the meanwhile memory is still needed there will not be any needed
-			to reallocate it.)*/
+			if memory is used again we can skip one allocation.)*/
 		void reset();
 
 	};

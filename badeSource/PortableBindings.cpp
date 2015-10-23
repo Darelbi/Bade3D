@@ -39,6 +39,8 @@ namespace Bade {
 		{
 			ioc.wire< ConcreteRenderer,
 												Shared < QueueExecutor> >();
+												
+			ioc.wire< QueueExecutor>();
 		}
 		else
 		{

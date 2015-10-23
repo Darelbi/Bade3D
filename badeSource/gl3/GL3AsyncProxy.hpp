@@ -4,7 +4,7 @@
 *******************************************************************************/
 #pragma once
 #include "../BadeRenderPass.hpp"
-#include "../CommandQueue.hpp"
+#include "../QueueExecutor.hpp"
 #include "../PortableGraphics.hpp"
 
 namespace Bade {
@@ -74,9 +74,18 @@ namespace GL3 {
 	
 	class GL3AsyncProxy{
 		
-		CommandQueue	queue;
+		CommandQueue		queue;
+		QueueExecutorPtr	executor;
 		
 	public:
+	
+		void submitAsLoad();
+		
+		void submitAsRender();
+	
+		GL3AsyncProxy( QueueExecutorPtr executor);
+	
+		void addEntity( EntityPtr && entity);
 	
 		void enableScissorTest();
 		

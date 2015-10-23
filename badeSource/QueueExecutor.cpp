@@ -61,6 +61,9 @@ namespace Bade{
 		commandsUpdated = true;
 
 		swap( nextQueue, nextToBeRendered);
+		
+		nextToBeRendered.reset(); //synchronous to main thread. can be used to free entities
+		
 		guard.unlock();
 	}
 

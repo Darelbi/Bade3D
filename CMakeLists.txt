@@ -251,7 +251,7 @@ function(create_test parm) #tests helper function
 
 	add_dependencies( build_and_test ${ExeName})
 
-	include_directories(  "badeSource")
+	target_include_directories( ${ExeName} PUBLIC "badeSource")
 
 	add_test( ${ExeName} ${ExeName})
 

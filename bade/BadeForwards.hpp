@@ -156,6 +156,7 @@ namespace Bade{
 	//	create a resource leak because you need a explicit dependency
 	//	on its manager when you want to reuse same resource)
 	//
+	using EntityPtr			= ManagedResource< ManagedEntity>;
 	using BitmapImagePtr	= ManagedResource< BitmapImage >;
 	using TexturePtr		= ManagedResource< Texture >;
 	using SamplerPtr		= ManagedResource< Sampler >;

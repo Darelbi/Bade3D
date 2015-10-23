@@ -142,6 +142,17 @@ namespace Bade {
 			entries.shrink_to_fit();
 		}
 		
+		EntityPtr shallowCopyAsEntity( ManagedResource< Entity> & entity){
+			static_assert( 	std::is_base_of< ManagedEntity, Entity>::value,
+							"ManagedEntity must be the Interface of Entity");
+							
+			return EntityPtr (
+							static_cast< ManagedEntity*>( 
+								shallowCopy( entity).release() 
+								)
+							);
+		}
+		
 		//set to nullptr "entity" and cast it to its base class
 		template< typename Base>
 		ManagedResource< Base> cast( ManagedResource< Entity> & entity){

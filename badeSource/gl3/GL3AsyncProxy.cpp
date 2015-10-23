@@ -7,39 +7,59 @@
 
 namespace Bade {
 namespace GL3 {
-	
+
 	#ifdef GL
 		#error "Check inclusion of GL headers."
 	#endif
 	#define GL gl::_detail
-	
+
 	template< typename T>
 	struct parms{
 		u8 * p;
 		parms( u8* parms): p( parms){
-			
+
 		}
-		
+
 		T* operator-> ()
 		{
-			return reinterpret_cast< T *>(p);	
+			return reinterpret_cast< T *>(p);
 		}
-		
+
 		T& operator* ()
 		{
 			return *reinterpret_cast< T *>(p);
 		}
 	};
+
+
+	void GL3AsyncProxy::submitAsLoad(){
+		executor->submitRendering( queue, true);
+	}
+
 	
-	
+	void GL3AsyncProxy::submitAsRender(){
+		executor->submitRendering( queue, false);
+	}
+
+
+	GL3AsyncProxy::GL3AsyncProxy( QueueExecutorPtr myexecutor){
+		executor = myexecutor;
+	}
+
+
+	void GL3AsyncProxy::addEntity( EntityPtr && entity){
+		queue.addEntity( std::move( entity));
+	}
+
+
 	void _enableScissorTest( u8*){
 		GL::Enable( gl::SCISSOR_TEST);
 	}
 	void GL3AsyncProxy::enableScissorTest(){
 		queue.pushCommand( _enableScissorTest);
 	}
-	
-	
+
+
 	void _setScissorRectangle( u8*p){
 		parms< ushort4> parm{ p};
 		GL::Scissor( parm->x, parm->y, parm->z, parm->w);
@@ -47,24 +67,24 @@ namespace GL3 {
 	void GL3AsyncProxy::setScissorRectangle( const ushort4 & rect){
 		queue.pushCommand( _setScissorRectangle, rect);
 	}
-	
-	
+
+
 	void _disableScissorTest( u8*){
 		GL::Disable( gl::SCISSOR_TEST);
 	}
 	void GL3AsyncProxy::disableScissorTest(){
 		queue.pushCommand( _disableScissorTest);
 	}
-	
-	
+
+
 	void _enableColorMask( u8*){
 		GL::ColorMask( 1, 1, 1, 1);
 	}
 	void GL3AsyncProxy::enableColorMask(){
 		queue.pushCommand( _enableColorMask);
 	}
-	
-	
+
+
 	void _setClearColor( u8*p){
 		parms< float4> parm{ p};
 		GL::ClearColor( parm->R, parm->G, parm->B, parm->A);
@@ -72,23 +92,23 @@ namespace GL3 {
 	void GL3AsyncProxy::setClearColor( const float4 & color){
 		queue.pushCommand( _setClearColor, color);
 	}
-	
-	
+
+
 	void _enableDepthMask( u8*){
 		GL::DepthMask( 1);
 	}
 	void GL3AsyncProxy::enableDepthMask(){
 		queue.pushCommand( _enableDepthMask);
 	}
-	
-	
+
+
 	void _enableStencilMask( u8*){
 		GL::StencilMask( 0xFF);
 	}
 	void GL3AsyncProxy::enableStencilMask(){
 		queue.pushCommand( _enableStencilMask);
 	}
-	
+
 
 	struct clearBuffersParm{
 		GLbitfield mask;
@@ -104,32 +124,32 @@ namespace GL3 {
 					stencil?	gl::STENCIL_BUFFER_BIT:0;
 		queue.pushCommand( _enableStencilMask, parm);
 	}
-	
-	
+
+
 	void _disableColorMask( u8*){
 		GL::ColorMask( 0, 0, 0, 0);
 	}
 	void GL3AsyncProxy::disableColorMask(){
 		queue.pushCommand( _disableColorMask);
 	}
-	
-	
+
+
 	void _disableDepthTest( u8*){
 		GL::Disable( gl::DEPTH_TEST);
 	}
 	void GL3AsyncProxy::disableDepthTest(){
 		queue.pushCommand( _disableDepthTest);
 	}
-	
-	
+
+
 	void _enableDepthTest( u8*){
 		GL::Enable( gl::DEPTH_TEST);
 	}
 	void GL3AsyncProxy::enableDepthTest(){
 		queue.pushCommand( _enableDepthTest);
 	}
-	
-	
+
+
 	void _setDepthFunc( u8* p){
 		parms< GLenum> parm{ p};
 		GL::DepthFunc( *parm);
@@ -143,48 +163,48 @@ namespace GL3 {
 		}
 		queue.pushCommand( _setDepthFunc, func);
 	}
-	
-	
+
+
 	void _disableDepthMask( u8*){
 		GL::DepthMask( 0);
 	}
 	void GL3AsyncProxy::disableDepthMask(){
 		queue.pushCommand( _disableDepthMask);
 	}
-	
-	
+
+
 	void _enableWireframeMode( u8*){
 		GL::PolygonMode( gl::FRONT_AND_BACK, gl::LINE);
 	}
 	void GL3AsyncProxy::enableWireframeMode(){
 		queue.pushCommand( _enableWireframeMode);
 	}
-	
-	
+
+
 	void _disableWireframeMode( u8*){
 		GL::PolygonMode( gl::FRONT_AND_BACK, gl::FILL);
 	}
 	void GL3AsyncProxy::disableWireframeMode(){
 		queue.pushCommand( _disableWireframeMode);
 	}
-	
-	
+
+
 	void _disableBlending( u8*){
 		GL::Disable( gl::BLEND);
 	}
 	void GL3AsyncProxy::disableBlending(){
 		queue.pushCommand( _disableBlending);
 	}
-	
-	
+
+
 	void _enableBlending( u8*){
 		GL::Enable( gl::BLEND);
 	}
 	void GL3AsyncProxy::enableBlending(){
 		queue.pushCommand( _enableBlending);
 	}
-	
-	
+
+
 	struct blendFuncParm{
 		GLenum sfactor;
 		GLenum dfactor;
@@ -196,32 +216,32 @@ namespace GL3 {
 	void GL3AsyncProxy::setBlendFunc( BlendMode mode){
 		blendFuncParm parm;
 		switch( mode){
-			case BlendMode::Transparent: 
-					parm.sfactor = gl::ONE; 
+			case BlendMode::Transparent:
+					parm.sfactor = gl::ONE;
 					parm.dfactor = gl::ONE_MINUS_SRC_ALPHA; break;
-			default: 
-					parm.sfactor = gl::ONE; 
+			default:
+					parm.sfactor = gl::ONE;
 					parm.dfactor = gl::ZERO; break;
 		}
 		queue.pushCommand( _setBlendFunc, parm);
 	}
-	
-	
+
+
 	void _disableStencilTest( u8*){
 		GL::Disable( gl::STENCIL_TEST);
 	}
 	void GL3AsyncProxy::disableStencilTest(){
 		queue.pushCommand( _disableStencilTest);
 	}
-	
-	
+
+
 	void _enableStencilTest( u8*){
 		GL::Enable( gl::STENCIL_TEST);
 	}
 	void GL3AsyncProxy::enableStencilTest(){
 		queue.pushCommand( _enableStencilTest);
 	}
-	
+
 	struct stencilFuncParm{
 		GLenum func;
 		GLint  ref;
@@ -234,21 +254,21 @@ namespace GL3 {
 		stencilFuncParm parm;
 		parm.ref = val;
 		switch(test){
-			case StencilTest::DrawIfGreaterThanVal:	
+			case StencilTest::DrawIfGreaterThanVal:
 								parm.func = gl::GREATER; break;
-			case StencilTest::DrawIfSmallerThanVal:	
+			case StencilTest::DrawIfSmallerThanVal:
 								parm.func = gl::LESS; break;
-			case StencilTest::DrawIfEqualToVal:		
+			case StencilTest::DrawIfEqualToVal:
 								parm.func = gl::EQUAL; break;
-			case StencilTest::DrawIfNotVal:			
+			case StencilTest::DrawIfNotVal:
 								parm.func = gl::NOTEQUAL; break;
-			default:								
+			default:
 								parm.func = gl::ALWAYS; break;
 		}
 		queue.pushCommand( _setStencilFunc, parm);
 	}
-	
-	
+
+
 	void _setStencilOp( u8* p){
 		parms< GLenum> parm{ p};
 		GL::StencilOp( gl::KEEP, gl::KEEP, *parm);
@@ -265,8 +285,8 @@ namespace GL3 {
 		}
 		queue.pushCommand( _setStencilOp, zspass);
 	}
-	
-	
+
+
 	void _useProgram( u8* p){
 		parms< NativeHandle> parm{ p};
 		GL::UseProgram(*parm);
@@ -274,8 +294,8 @@ namespace GL3 {
 	void GL3AsyncProxy::useProgram( NativeHandle program){
 		queue.pushCommand( _useProgram, program);
 	}
-	
-	
+
+
 	void _activeTextureUnit( u8* p){
 		parms< NativeEnum> parm{ p};
 		GL::ActiveTexture(*parm);
@@ -284,8 +304,8 @@ namespace GL3 {
 		NativeEnum textureUnit = Graphics::texture0 + unit;
 		queue.pushCommand( _activeTextureUnit, textureUnit);
 	}
-	
-	
+
+
 	struct bindSamplerParm{
 		NativeHandle	unit;
 		NativeHandle	sampler;
@@ -300,8 +320,8 @@ namespace GL3 {
 		parm.sampler = sampler;
 		queue.pushCommand( _bindSampler, parm);
 	}
-	
-	
+
+
 	struct bindTextureParm{
 		NativeEnum 		target;
 		NativeHandle	texture;
@@ -316,8 +336,8 @@ namespace GL3 {
 		parm.texture = texture;
 		queue.pushCommand( _bindTexture, parm);
 	}
-	
-	
+
+
 	void _setVao( u8* p){
 		parms< NativeHandle> parm{ p};
 		GL::BindVertexArray( *parm);

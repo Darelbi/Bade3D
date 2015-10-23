@@ -19,8 +19,17 @@ namespace GL3 {
 	GL3RenderQueue::GL3RenderQueue(  ProxyPtr proxy){
 		asyncProxy = proxy;
 	}
+	
+	bool GL3RenderQueue::GPUResourceUpdate(){
+		
+		// Before rendering, perform resource loading. We can assume
+		// hence that rendering is consistent with loaded resources.
+		asyncProxy->submitAsLoad();
+	}
 
 	bool GL3RenderQueue::compileStates( StdList< RenderPass> & passes){
+		
+		GPUResourceUpdate();
 
 		lastState = baseState;
 
@@ -38,6 +47,9 @@ namespace GL3 {
 			for( RenderSlot & slot : pass.slots)
 				minimizeSlotStates( lastState, slot);
 		}
+		
+		// finally prepare the states needed for Rendering.
+		asyncProxy->submitAsRender();
 		
 		return true;
 	}

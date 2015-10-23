@@ -40,6 +40,8 @@ namespace GL3 {
 
 		GL3RenderQueue( ProxyPtr proxy);
 
+		bool GPUResourceUpdate() override;
+		
 		// resource loading is performed before compiling so that
 		// all referenced Ids are valid (unless resource loading failed)
 		bool compileStates( StdList< RenderPass> & passes) override;

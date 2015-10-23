@@ -7,6 +7,14 @@
 #include <utility>
 
 namespace Bade {
+	
+	void CommandQueue::addEntity( EntityPtr && entity) {
+		entities.push_back( std::move(entity));
+	}
+	
+	u32 CommandQueue::getEntityCount() {
+		return entities.size();
+	}
 
 	CommandQueue::CommandQueue(){
 
@@ -36,6 +44,7 @@ namespace Bade {
 
 		parms.resize(0);
 		commands.resize(0);
+		entities.clear();
 
 		currentByte = 0;
 		currentCommand = 0;
