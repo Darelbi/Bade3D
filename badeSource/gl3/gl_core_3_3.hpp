@@ -362,6 +362,7 @@ namespace gl
 		TEXTURE_HEIGHT                   = 0x1001,
 		TEXTURE_INTERNAL_FORMAT          = 0x1003,
 		TEXTURE_MAG_FILTER               = 0x2800,
+		TEXTURE_MAX_ANISOTROPY			 = 0x84FE,
 		TEXTURE_MIN_FILTER               = 0x2801,
 		TEXTURE_RED_SIZE                 = 0x805C,
 		TEXTURE_WIDTH                    = 0x1000,
