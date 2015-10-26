@@ -37,5 +37,9 @@ namespace Bade {
 		virtual bool hasMipmaps() const = 0;
 		
 		virtual InternalFormat getInternalFormat() const = 0;
+		
+		virtual u32 getWidth() const = 0;
+		
+		virtual u32 getHeight() const = 0;
 	};
 } // namespace Bade

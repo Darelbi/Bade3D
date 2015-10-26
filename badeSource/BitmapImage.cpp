@@ -24,6 +24,7 @@ namespace Bade{
 		:width(w), height(h), channels( alpha?4:3)
 	{
 		assert( w<= 4096 && h<= 4096); //max size on some platforms
+		assert( w >0 && h >0);
 		lineSize = ( channels * width + 3) & ~3;
 		pixels = new u8[ lineSize*height];
 	}
@@ -66,7 +67,7 @@ namespace Bade{
 	}
 	
 	ForeignBuffer<u8> BitmapImage::getBitmapBuffer() const{
-		return ForeignBuffer<u8>(pixels);
+		return ForeignBuffer< u8>( pixels);
 	}
 	
 	ColorRGBA BitmapImage::getPixelA( u16 x, u16 y) const{

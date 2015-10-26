@@ -29,7 +29,7 @@ namespace Bade {
 										
 		/** Update the image for a texture (faster if image is same size).
 			You CANNOT change old texture parameters like InternalFormat 
-			or mipmaps.*/
+			or mipmaps. So you should keep alpha channel (if you had one)*/
 		virtual void reloadTexture( BitmapImagePtr image,
 									TexturePtr & texture) = 0;
 

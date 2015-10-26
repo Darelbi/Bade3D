@@ -92,11 +92,26 @@ namespace Bade {
 			assert( false && "no free elements but 'free' count was > 1");
 		}
 		
-		ManagedResource< Entity> shallowCopy( ManagedResource< Entity> & ptr){
+		
+		template< typename Base>
+		ManagedResource< Entity> shallowCopy( ManagedResource< Base> & ptr){
+			
+			static_assert( 	std::is_base_of< Base, Entity>::value ||
+							std::is_same< Base, Entity>::value,
+							"ManagedEntity must be the Interface of Entity");
 			
 			ptr->referenceIncrement();
 			
 			return ManagedResource< Entity>(
+							static_cast< Entity*> ( ptr.get())
+						);
+		}
+		
+		template< typename Base>
+		ManagedResource< Base> shallowCopyAbstract( ManagedResource< Base> & ptr){
+			ptr->referenceIncrement();
+			
+			return ManagedResource< Base>(
 							ptr.get()
 						);
 		}

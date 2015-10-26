@@ -18,6 +18,14 @@ namespace GL3 {
 	InternalFormat GL3Texture::getInternalFormat() const {
 		return format;		
 	}
+	
+	u32 GL3Texture::getWidth() const{
+		return width;
+	}
+		
+	u32 GL3Texture::getHeight() const{
+		return height;
+	}
 
 } // namespace GL3
 } // namespace Bade

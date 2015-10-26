@@ -13,12 +13,18 @@ class GL3Texture: public Texture{
 	
 public:
 	
-	virtual bool isARenderTarget() const override;
+	bool isARenderTarget() const override;
 		
-	virtual bool hasMipmaps() const override;
+	bool hasMipmaps() const override;
 	
-	virtual InternalFormat getInternalFormat() const override;
+	InternalFormat getInternalFormat() const override;
+	
+	u32 getWidth() const override;
+		
+	u32 getHeight() const override;
 
+	u32				width;
+	u32				height;
 	NativeHandle	nativeHandle;
 	bool    		mipmaps;
 	InternalFormat  format;

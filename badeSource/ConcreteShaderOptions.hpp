@@ -48,8 +48,6 @@ namespace Bade {
 		bool isLocked() override { return locked;}
 
 		bool sameString( const char * str1, const char* str2);
-							
-		inline void grab() { referenceIncrement();}
 		
 	private:
 	

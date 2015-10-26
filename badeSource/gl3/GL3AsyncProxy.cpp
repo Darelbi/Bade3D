@@ -4,6 +4,7 @@
 *******************************************************************************/
 #include "GL3AsyncProxy.hpp"
 #include "GL3Texture.hpp"
+#include "GL3Sampler.hpp"
 
 #include "../BadeBitmapImage.hpp"
 
@@ -353,38 +354,132 @@ namespace GL3 {
 		GL3Texture * 	texture;
 		BitmapImage * 	image;
 		bool 			mipmaps;
+		bool			newHandle;
+		bool			newSize;
 	};
 	void _loadBitmapTexture( u8* p){
 		parms< loadBitmapTextureParm> parm{ p};
-		
+
 		bool alpha = parm->image->hasAlphaChannel();
-		
+
 		GL3Texture * 	texture = parm->texture;
 		BitmapImage * 	image   = parm->image;
 
-		GL::GenTextures( 1, &texture->nativeHandle);
-		GL::BindTexture( gl::TEXTURE_2D, texture->nativeHandle);
+		if(parm->newHandle)
+			GL::GenTextures( 1, &texture->nativeHandle);
 
-		GL::TexImage2D( gl::TEXTURE_2D,  				// target
-						0,								// base level
-						alpha? gl::RGBA8: gl::RGB8,		// internal format
-						image->getWidth(),
-						image->getHeight(),
-						0,								// border
-						alpha? gl::RGBA: gl::RGB,		// format
-						gl::UNSIGNED_BYTE,				// type
-						image->getBitmapBuffer().get() //data
-						);
-						
+		GL::BindTexture( gl::TEXTURE_2D, texture->nativeHandle);
+		GL::Enable( gl::TEXTURE_2D); // workaround ATI bug (redundant)
+
+		if(parm->newHandle || parm->newSize)
+			GL::TexImage2D( gl::TEXTURE_2D,  				// target
+							0,								// base level
+							alpha? gl::RGBA8: gl::RGB8,		// internal format
+							image->getWidth(),
+							image->getHeight(),
+							0,								// border
+							alpha? gl::RGBA: gl::RGB,		// format
+							gl::UNSIGNED_BYTE,				// type
+							image->getBitmapBuffer().get()	//data
+							);
+		else
+			GL::TexSubImage2D( gl::TEXTURE_2D,  			// target
+								0,							// base level
+								0,							// x offset
+								0,							// y offset
+								image->getWidth(),
+								image->getHeight(),
+								alpha? gl::RGBA: gl::RGB,	// internal format
+								gl::UNSIGNED_BYTE,			// type
+								image->getBitmapBuffer().get()	//data
+							);
+
 		if(parm->mipmaps)
 			GL::GenerateMipmap( gl::TEXTURE_2D);
 	}
-	void GL3AsyncProxy::loadBitmapTexture( GL3Texture * t, BitmapImage * i, bool mip){
+	void GL3AsyncProxy::loadBitmapTexture( GL3Texture * t, BitmapImage * i, bool mip,
+											bool newhandle, bool newsize){
 		loadBitmapTextureParm parm;
 		parm.texture = t;
 		parm.image   = i;
 		parm.mipmaps = mip;
+		parm.newHandle = newhandle;
+		parm.newSize = newsize;
 		queue.pushCommand( _loadBitmapTexture, parm);
+	}
+
+
+	void _deleteTexture( u8* p){
+		parms< NativeHandle> parm{ p};
+		NativeHandle texture = *parm;
+		GL::DeleteTextures( 1, &texture);
+	}
+	void GL3AsyncProxy::deleteTexture( NativeHandle texture){
+		queue.pushCommand( _deleteTexture, texture);
+	}
+
+	struct createSamplerParm{
+		GL3Sampler * sampler;
+	};
+	void _createSampler( u8* p){
+		parms< createSamplerParm> parm{ p};
+		
+		NativeHandle *	handle	= &parm->sampler->nativeHandle;
+		FilteringMode	mode	= parm->sampler->filteringMode;
+		TextureWrap		wrap	= parm->sampler->textureWrap;
+		float			aniso	= parm->sampler->anisotropicLevel;
+		
+		GL::GenSamplers( 1, handle );
+
+		switch( mode){
+		case FilteringMode::Nearest :
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_MAG_FILTER, gl::NEAREST);
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_MIN_FILTER, gl::NEAREST);
+			break;
+
+        case FilteringMode::Bilinear :
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_MAG_FILTER, gl::LINEAR);
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_MIN_FILTER, gl::LINEAR);
+			break;
+
+        default: // anisotropic & trilinear
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_MAG_FILTER, gl::LINEAR);
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_LINEAR);
+			break;
+		}
+
+		switch( wrap){
+		case TextureWrap::Clamp :
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE);
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE);
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_WRAP_R, gl::CLAMP_TO_EDGE);
+			break;
+		default: //repeat
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_WRAP_S, gl::REPEAT);
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_WRAP_T, gl::REPEAT);
+			gl::_detail::SamplerParameteri ( *handle, gl::TEXTURE_WRAP_R, gl::REPEAT);
+			break;
+		}
+
+		if( mode == FilteringMode::Anisotropic)
+			gl::_detail::SamplerParameterf( *handle, gl::TEXTURE_MAX_ANISOTROPY, aniso);
+
+	}
+	void GL3AsyncProxy::createSampler(	GL3Sampler * sampler)
+	{
+		createSamplerParm parm;
+		parm.sampler = sampler;
+		queue.pushCommand( _createSampler, parm);
+	}
+
+
+	void _deleteSampler( u8* p){
+		parms< NativeHandle> parm{ p};
+		NativeHandle sampler = *parm;
+		GL::DeleteSamplers( 1, &sampler);
+	}
+	void GL3AsyncProxy::deleteSampler( NativeHandle sampler){
+		queue.pushCommand( _deleteSampler, sampler);
 	}
 	#undef GL
 } // namespace GL3

@@ -77,6 +77,13 @@ namespace GL3 {
 	struct loadBitmapTextureParm;
 	void _loadBitmapTexture( u8*);
 	
+	void _deleteTexture( u8*);
+	
+	struct createSamplerParm;
+	void _createSampler( u8*);
+	
+	void _deleteSampler( u8*);
+	
 	class GL3AsyncProxy{
 		
 		CommandQueue		queue;
@@ -146,7 +153,14 @@ namespace GL3 {
 		
 		void setVao( NativeHandle vao);
 		
-		void loadBitmapTexture( GL3Texture * t, BitmapImage * i, bool mip);
+		void loadBitmapTexture( GL3Texture * t, BitmapImage * i, bool mip,
+								bool newHandle, bool newsize);
+								
+		void deleteTexture( NativeHandle texture);
+		
+		void createSampler( GL3Sampler* sampler);
+		
+		void deleteSampler( NativeHandle handle);
 	};
 } // namespace GL3
 } // namespace Bade

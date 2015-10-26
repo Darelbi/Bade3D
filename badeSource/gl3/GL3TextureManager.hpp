@@ -20,7 +20,15 @@ namespace GL3 {
 	class GL3TextureManager: public TextureManager{
 		
 		ManageEngine< GL3Texture>	textures;
+		ManageEngine< GL3Sampler>	samplers;
+	
+		GL3SamplerPtr				samplersCache[16];
+		
 		ProxyPtr					asyncProxy;
+		
+		void createSampler( u8 idx, FilteringMode f, TextureWrap w, float a);
+		void createSamplers();
+		void destroySamplers();
 		
 	public:
 	
@@ -36,8 +44,7 @@ namespace GL3 {
 
 		SamplerPtr 	getSampler( FilteringMode 		filtering,
 								TextureWrap			wrap,
-								float 				anisotropy) const
-								override;
+								float 				anisotropy)	override;
 										
 		TextureSlotPtr getTextureSlot( 	u8 textureUnit,
 										TexturePtr & texture,
@@ -49,6 +56,8 @@ namespace GL3 {
 		TextureSlotPtr shallowCopy( TextureSlotPtr & textureSlot)  override;
 
 		void freeUnusedTextures() override;
+		
+		~GL3TextureManager();
 	};
 } // namespace GL3
 } // namespace Bade

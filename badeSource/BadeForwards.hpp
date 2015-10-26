@@ -71,7 +71,6 @@ namespace Bade{
 		
 		template <typename T>
 		friend class ManageEngine;
-	protected:
 		inline void referenceIncrement(){ referenceCount++; }
 	public:
 		inline u32 getReferenceCount(){ return referenceCount;}
