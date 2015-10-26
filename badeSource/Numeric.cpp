@@ -10,15 +10,21 @@ namespace Bade{
 float nearestPowerOf2( float n){
 
     int exponent;
-	const float significand = std::frexp( n, &exponent);
-	const float treshold = 0.75f;
 	// significand * 2^exponent = n
 	// 0.500000000 * 2^4        = 8
 	// 0.500000000 * 2^-2        = 1/8
 	
-	if( significand <= treshold)
-		return std::ldexp( 1.0, exponent-1);
-	return std::ldexp( 1.0, exponent);
+	return nearestPowerOf2(n, exponent);
+}
+
+float nearestPowerOf2( float n, int & exp){
+	
+	const float significand = std::frexp( n, &exp);
+	const float treshold = 0.75f;
+	
+	exp = significand <= treshold? exp-1 : exp;
+
+	return std::ldexp( 1.0, exp);
 }
 
 float clamp( float val, float min, float max ){
