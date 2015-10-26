@@ -8,7 +8,8 @@
 
 using namespace Bade;
 
-namespace{ 
+namespace{
+	
 	void setTransparentRed( u8 & r, u8 & g, u8 & b, u8 &a){
 		r=255;
 		g=0;
